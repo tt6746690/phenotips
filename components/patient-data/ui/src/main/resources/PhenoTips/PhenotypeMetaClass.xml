@@ -102,39 +102,26 @@
       <validationRegExp/>
       <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
     </age_of_onset_age>
-    <age_of_onset_date_month>
+    <age_of_onset_date>
       <customDisplay/>
       <disabled>0</disabled>
-      <name>age_of_onset_date_month</name>
-      <number>6</number>
-      <numberType>integer</numberType>
-      <prettyName>Age of onset - month</prettyName>
-      <size>2</size>
-      <unmodifiable>0</unmodifiable>
-      <validationMessage/>
-      <validationRegExp/>
-      <classType>com.xpn.xwiki.objects.classes.NumberClass</classType>
-    </age_of_onset_date_month>
-    <age_of_onset_date_year>
-      <customDisplay/>
-      <disabled>0</disabled>
-      <name>age_of_onset_date_year</name>
+      <name>age_of_onset_date</name>
       <number>5</number>
-      <numberType>long</numberType>
-      <prettyName>Age of onset - year</prettyName>
-      <size>4</size>
+      <picker>0</picker>
+      <prettyName>Age of onset - date</prettyName>
+      <size>30</size>
       <unmodifiable>0</unmodifiable>
       <validationMessage/>
       <validationRegExp/>
-      <classType>com.xpn.xwiki.objects.classes.NumberClass</classType>
-    </age_of_onset_date_year>
+      <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+    </age_of_onset_date>
     <comments>
       <contenttype>PureText</contenttype>
       <customDisplay/>
       <disabled>0</disabled>
       <editor>PureText</editor>
       <name>comments</name>
-      <number>12</number>
+      <number>11</number>
       <picker>0</picker>
       <prettyName>Comments</prettyName>
       <rows>5</rows>
@@ -163,7 +150,7 @@
       <idField/>
       <multiSelect>0</multiSelect>
       <name>laterality</name>
-      <number>11</number>
+      <number>10</number>
       <picker>0</picker>
       <prettyName>Laterality</prettyName>
       <relationalStorage>0</relationalStorage>
@@ -198,7 +185,7 @@
       <idField/>
       <multiSelect>0</multiSelect>
       <name>pace_of_progression</name>
-      <number>7</number>
+      <number>6</number>
       <picker>0</picker>
       <prettyName>Pace of progression</prettyName>
       <relationalStorage>0</relationalStorage>
@@ -233,7 +220,7 @@
       <idField/>
       <multiSelect>0</multiSelect>
       <name>severity</name>
-      <number>8</number>
+      <number>7</number>
       <picker>0</picker>
       <prettyName>Severity</prettyName>
       <relationalStorage>0</relationalStorage>
@@ -267,7 +254,7 @@
       <idField/>
       <multiSelect>0</multiSelect>
       <name>spatial_pattern</name>
-      <number>10</number>
+      <number>9</number>
       <picker>0</picker>
       <prettyName>Spatial pattern</prettyName>
       <relationalStorage>0</relationalStorage>
@@ -291,7 +278,7 @@
       <idField/>
       <multiSelect>1</multiSelect>
       <name>supporting_documents</name>
-      <number>14</number>
+      <number>13</number>
       <picker>0</picker>
       <prettyName>Medical report (optional)</prettyName>
       <relationalStorage>1</relationalStorage>
@@ -315,7 +302,7 @@
       <idField/>
       <multiSelect>1</multiSelect>
       <name>supporting_images</name>
-      <number>13</number>
+      <number>12</number>
       <picker>0</picker>
       <prettyName>Image / photo (optional)</prettyName>
       <relationalStorage>1</relationalStorage>
@@ -375,7 +362,7 @@
       <idField/>
       <multiSelect>0</multiSelect>
       <name>temporal_pattern</name>
-      <number>9</number>
+      <number>8</number>
       <picker>0</picker>
       <prettyName>Temporal pattern</prettyName>
       <relationalStorage>0</relationalStorage>
