@@ -237,8 +237,10 @@
     {{html wiki="false" clean="false"}}&lt;dl id="$targetId"&gt;{{/html}}##
       #foreach($prop in $dataClass.properties)##
         #if ($enabledProperties.contains($prop.name))#set($displayMode='')#else#set($displayMode=' hidden')#end##
-        &lt;dt class="${prop.name}${displayMode}"&gt; #if ($collapsibleProperties.contains($prop.name)) &lt;span class="collapse-button"&gt;&lt;/span&gt; #end &lt;label for=""&gt;${prop.translatedPrettyName}:&lt;/label&gt;&lt;/dt&gt;##
-        &lt;dd class="${prop.name}${displayMode}"&gt; #if ($prop.name == 'age_of_onset') #__phenotypeMeta_displayAgeOfOnset() #end $doc.display($prop.getName(), $targetObj)&lt;/dd&gt;##
+        #if ($prop.name.charAt(0) != '_') ## properties starting with '_' are hidden
+          &lt;dt class="${prop.name}${displayMode}"&gt; #if ($collapsibleProperties.contains($prop.name)) &lt;span class="collapse-button"&gt;&lt;/span&gt; #end &lt;label for=""&gt;${prop.translatedPrettyName}:&lt;/label&gt;&lt;/dt&gt;##
+          &lt;dd class="${prop.name}${displayMode}"&gt; $doc.display($prop.getName(), $targetObj)&lt;/dd&gt;##
+        #end
       #end##
     &lt;/dl&gt;##
     &lt;input type="hidden" name="delete-action" value="$doc.getURL('objectremove', "classname=${targetObj.xWikiClass.name}&amp;amp;classid=${targetObj.number}&amp;amp;form_token=$!{services.csrf.getToken()}")"/&gt;##
@@ -264,18 +266,6 @@
     #end
     )))
   #end
-#end
-
-#macro (__phenotypeMeta_displayAgeOfOnset)
-  &lt;div class="top"&gt;
-    &lt;div class="date"&gt;
-      &lt;label&gt;Date:&lt;/label&gt;&lt;input type='text' id='${prefix}${name}' title="$!escapetool.xml($format)" class='hidden fuzzy-date' value="$!services.jodatime.getDateTimeFormatterForPattern($definedFormat).print($value)" alt="$!services.jodatime.ISODateTimeFormatter.print($value)"/&gt;&lt;input type='hidden' name='${prefix}${name}_entered' id='${prefix}${name}_entered' value="$!{escapetool.xml($object.getProperty("${name}_entered").value)}"/&gt;
-      &lt;span class="error"&gt;&lt;/span&gt;
-    &lt;/div&gt;
-    &lt;div class="age"&gt;
-      &lt;label&gt;Age:&lt;/label&gt;&lt;input class="pt-duration age-of-onset-age" type="text" placeholder="e.g. 3y2m1d" value="$!age"&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
 #end
 {{/velocity}}</content>
 </xwikidoc>

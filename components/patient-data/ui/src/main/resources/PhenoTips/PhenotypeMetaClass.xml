@@ -47,10 +47,107 @@
     <defaultWeb/>
     <nameField/>
     <validationScript/>
+    <_age_of_onset_age>
+      <customDisplay>{{velocity}}{{html clean=false}}
+#if ($xcontext.action == 'edit')
+  &lt;input name='${prefix}${name}' id='${prefix}${name}' class="pt-duration" type="text" placeholder="e.g. 3y2m1d" value="$!value"&gt;
+#else
+  $value
+#end
+{{/html}}{{/velocity}}</customDisplay>
+      <disabled>0</disabled>
+      <name>_age_of_onset_age</name>
+      <number>4</number>
+      <picker>0</picker>
+      <prettyName>Age of onset - age</prettyName>
+      <size>30</size>
+      <unmodifiable>0</unmodifiable>
+      <validationMessage/>
+      <validationRegExp/>
+      <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+    </_age_of_onset_age>
+    <_age_of_onset_date>
+      <customDisplay>{{velocity}}{{html clean=false}}
+#set ($format = $services.recordConfiguration.activeConfiguration.dateOfBirthFormat)
+#set ($definedFormat = "$!object.xWikiClass.get($name).getProperty('dateFormat').value")
+#if ($xcontext.action == 'edit')
+  #if ($value)
+    #set ($value = $services.jodatime.getMutableDateTime($value.time))
+    #set ($discard = $value.setZoneRetainFields($services.jodatime.UTCTimezone))
+  #end
+  &lt;input type='text' id='${prefix}${name}' title="$!escapetool.xml($format)" name='${prefix}${name}' class='fuzzy-date' value="$!services.jodatime.getDateTimeFormatterForPattern($definedFormat).print($value)" alt="$!services.jodatime.ISODateTimeFormatter.print($value)"/&gt;&lt;input type='hidden' name='${prefix}${name}_entered' id='${prefix}${name}_entered' value="$!{escapetool.xml($object.getProperty("${name}_entered").value)}"/&gt;
+#else
+#set ($enteredValue = $object.getProperty("${name}_entered").value)
+#if ("$!enteredValue" != '' &amp;&amp; "$!enteredValue" != '{}')
+  #set ($enteredValue = $jsontool.parse($enteredValue))
+  #if ($enteredValue.decade)
+    &lt;span class="date"&gt;$!escapetool.xml($enteredValue.decade)&lt;/span&gt;
+  #else
+    #set ($displayedValue = $format)
+    #if ($enteredValue.year)
+      #set ($displayedValue = $displayedValue.replaceAll('y+', $enteredValue.year))
+      #if ($enteredValue.month)
+        #set ($displayedValue = $displayedValue.replaceAll('M+', $enteredValue.month))
+        #if ($enteredValue.day)
+          #set ($displayedValue = $displayedValue.replaceAll('d+', $enteredValue.day))
+        #end
+      #end
+    #end
+    #set ($displayedValue = $displayedValue.replaceAll('[a-zA-Z]+(\W|$)', '').replaceAll('^\W+|\W+$', ''))
+    &lt;span class="date"&gt;$!escapetool.xml($displayedValue)&lt;/span&gt;
+  #end
+#elseif ($value)
+  #set ($value = $services.jodatime.getMutableDateTime($value.time))
+  #set ($discard = $value.setZoneRetainFields($services.jodatime.UTCTimezone))
+  &lt;span class="date"&gt;$!services.jodatime.getDateTimeFormatterForPattern($format).print($value)&lt;/span&gt;
+#end
+#end
+{{/html}}{{/velocity}}</customDisplay>
+      <dateFormat>yyyy-MM-dd</dateFormat>
+      <disabled>0</disabled>
+      <emptyIsToday>0</emptyIsToday>
+      <name>_age_of_onset_date</name>
+      <number>5</number>
+      <picker>1</picker>
+      <prettyName>Age of onset - date</prettyName>
+      <size>20</size>
+      <unmodifiable>0</unmodifiable>
+      <validationMessage/>
+      <validationRegExp/>
+      <classType>com.xpn.xwiki.objects.classes.DateClass</classType>
+    </_age_of_onset_date>
+    <_age_of_onset_date_entered>
+      <customDisplay/>
+      <disabled>0</disabled>
+      <name>_age_of_onset_date_entered</name>
+      <number>6</number>
+      <picker>0</picker>
+      <prettyName>Age of onset - date (entered)</prettyName>
+      <size>30</size>
+      <unmodifiable>0</unmodifiable>
+      <validationMessage/>
+      <validationRegExp/>
+      <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+    </_age_of_onset_date_entered>
     <age_of_onset>
       <cache>0</cache>
       <classname/>
-      <customDisplay>{{velocity}}
+      <customDisplay>{{velocity filter="html"}}
+#if ($type == 'edit')
+  {{html wiki=true clean=false}}
+  &lt;div class="top"&gt;
+    &lt;div class="date"&gt;
+      &lt;label&gt;Date:&lt;/label&gt;
+      $doc.display("_age_of_onset_date", $object)
+      &lt;span class="error"&gt;&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div class="age"&gt;
+      &lt;label&gt;Age:&lt;/label&gt;
+      $doc.display("_age_of_onset_age", $object)
+    &lt;/div&gt;
+  &lt;/div&gt;
+  {{/html}}
+#end
 #set ($order = [
   'HP:0003577',
   'HP:0030674',
@@ -68,7 +165,17 @@
 #set ($startWith = 'HP:0003674')
 {{/velocity}}
 
-{{include reference="PhenoTips.HPOBranchDisplayer"/}}</customDisplay>
+{{include reference="PhenoTips.HPOBranchDisplayer"/}}
+
+{{velocity}}
+#if ($type != 'edit')##
+  #set ($date = $doc.display("_age_of_onset_date", $object))
+  #set ($age = $doc.display("_age_of_onset_age", $object))
+  #if ("$!date" != "" || "$!age" != "")
+    ($!date#if ("$!date" != "" &amp;&amp; "$!age" != "") / #end#if("$!age" != "")age $!age#end)
+  #end
+#end##
+{{/velocity}}</customDisplay>
       <disabled>0</disabled>
       <displayType>select</displayType>
       <idField/>
@@ -89,39 +196,13 @@
       <valueField/>
       <classType>com.xpn.xwiki.objects.classes.DBListClass</classType>
     </age_of_onset>
-    <age_of_onset_age>
-      <customDisplay/>
-      <disabled>0</disabled>
-      <name>age_of_onset_age</name>
-      <number>4</number>
-      <picker>0</picker>
-      <prettyName>Age of onset - age</prettyName>
-      <size>30</size>
-      <unmodifiable>0</unmodifiable>
-      <validationMessage/>
-      <validationRegExp/>
-      <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-    </age_of_onset_age>
-    <age_of_onset_date>
-      <customDisplay/>
-      <disabled>0</disabled>
-      <name>age_of_onset_date</name>
-      <number>5</number>
-      <picker>0</picker>
-      <prettyName>Age of onset - date</prettyName>
-      <size>30</size>
-      <unmodifiable>0</unmodifiable>
-      <validationMessage/>
-      <validationRegExp/>
-      <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-    </age_of_onset_date>
     <comments>
       <contenttype>PureText</contenttype>
       <customDisplay/>
       <disabled>0</disabled>
       <editor>PureText</editor>
       <name>comments</name>
-      <number>11</number>
+      <number>12</number>
       <picker>0</picker>
       <prettyName>Comments</prettyName>
       <rows>5</rows>
@@ -150,7 +231,7 @@
       <idField/>
       <multiSelect>0</multiSelect>
       <name>laterality</name>
-      <number>10</number>
+      <number>11</number>
       <picker>0</picker>
       <prettyName>Laterality</prettyName>
       <relationalStorage>0</relationalStorage>
@@ -185,7 +266,7 @@
       <idField/>
       <multiSelect>0</multiSelect>
       <name>pace_of_progression</name>
-      <number>6</number>
+      <number>7</number>
       <picker>0</picker>
       <prettyName>Pace of progression</prettyName>
       <relationalStorage>0</relationalStorage>
@@ -220,7 +301,7 @@
       <idField/>
       <multiSelect>0</multiSelect>
       <name>severity</name>
-      <number>7</number>
+      <number>8</number>
       <picker>0</picker>
       <prettyName>Severity</prettyName>
       <relationalStorage>0</relationalStorage>
@@ -254,7 +335,7 @@
       <idField/>
       <multiSelect>0</multiSelect>
       <name>spatial_pattern</name>
-      <number>9</number>
+      <number>10</number>
       <picker>0</picker>
       <prettyName>Spatial pattern</prettyName>
       <relationalStorage>0</relationalStorage>
@@ -278,7 +359,7 @@
       <idField/>
       <multiSelect>1</multiSelect>
       <name>supporting_documents</name>
-      <number>13</number>
+      <number>14</number>
       <picker>0</picker>
       <prettyName>Medical report (optional)</prettyName>
       <relationalStorage>1</relationalStorage>
@@ -302,7 +383,7 @@
       <idField/>
       <multiSelect>1</multiSelect>
       <name>supporting_images</name>
-      <number>12</number>
+      <number>13</number>
       <picker>0</picker>
       <prettyName>Image / photo (optional)</prettyName>
       <relationalStorage>1</relationalStorage>
@@ -362,7 +443,7 @@
       <idField/>
       <multiSelect>0</multiSelect>
       <name>temporal_pattern</name>
-      <number>8</number>
+      <number>9</number>
       <picker>0</picker>
       <prettyName>Temporal pattern</prettyName>
       <relationalStorage>0</relationalStorage>
