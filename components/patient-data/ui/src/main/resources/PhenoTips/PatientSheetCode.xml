@@ -4666,7 +4666,7 @@ h1, h2, h3, h4 {
   border-color: #FFF !important;
 }
 .phenotype-details .age_of_onset .top {
-  padding: 0.6em 1.2em;
+  padding: 0 1.2em 0.6em 1.2em;
   overflow: hidden;
 }
 .phenotype-details .age_of_onset .date label,
@@ -4675,16 +4675,27 @@ h1, h2, h3, h4 {
   line-height: 1.5em;
 }
 .phenotype-details .age_of_onset .date,
+.phenotype-details .age_of_onset .age {
+  margin-top: 0.6em;
+  float: left;
+}
+.phenotype-details .age_of_onset .date {
+  margin-right: 2em;
+}
+.phenotype-details .age_of_onset .date,
 .phenotype-details .age_of_onset .date .fuzzy-date-picker {
   float: left;
 }
-.phenotype-details .age_of_onset .age {
-  float: right;
-}
 .phenotype-details .age_of_onset .age input[type=text] {
-  float: left; 
+  float: left;
   padding: 2px;
   width: auto;
+}
+.phenotype-details .age_of_onset .age input[type=text][readonly] {
+  font-style: italic;
+}
+.phenotype-details .LV_validation_message {
+	position: static;
 }
 .phenotype-details .attachment-list .attachment-item,
 .phenotype-details .attachment-list .attachment-item input {
