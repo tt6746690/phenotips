@@ -50,7 +50,7 @@
     <_age_of_onset_age>
       <customDisplay>{{velocity}}{{html clean=false}}
 #if ($xcontext.action == 'edit')
-  &lt;input name='${prefix}${name}' id='${prefix}${name}' class="pt-duration" type="text" placeholder="e.g. 3y2m1d" value="$!value"&gt;
+  &lt;input name='${prefix}${name}' id='${prefix}${name}' class="pt-duration pt-age-calculated-from-date pt-age-of-onset" data-linked-date="${prefix}_age_of_onset_date" type="text" placeholder="e.g. 3y2m1d" value="$!value"&gt;
 #else
   $value
 #end
@@ -75,7 +75,7 @@
     #set ($value = $services.jodatime.getMutableDateTime($value.time))
     #set ($discard = $value.setZoneRetainFields($services.jodatime.UTCTimezone))
   #end
-  &lt;input type='text' id='${prefix}${name}' title="$!escapetool.xml($format)" name='${prefix}${name}' class='fuzzy-date' value="$!services.jodatime.getDateTimeFormatterForPattern($definedFormat).print($value)" alt="$!services.jodatime.ISODateTimeFormatter.print($value)"/&gt;&lt;input type='hidden' name='${prefix}${name}_entered' id='${prefix}${name}_entered' value="$!{escapetool.xml($object.getProperty("${name}_entered").value)}"/&gt;
+  &lt;input type='text' id='${prefix}${name}' title="$!escapetool.xml($format)" name='${prefix}${name}' class='fuzzy-date pt-date-while-alive' value="$!services.jodatime.getDateTimeFormatterForPattern($definedFormat).print($value)" alt="$!services.jodatime.ISODateTimeFormatter.print($value)"/&gt;&lt;input type='hidden' name='${prefix}${name}_entered' id='${prefix}${name}_entered' value="$!{escapetool.xml($object.getProperty("${name}_entered").value)}"/&gt;
 #else
 #set ($enteredValue = $object.getProperty("${name}_entered").value)
 #if ("$!enteredValue" != '' &amp;&amp; "$!enteredValue" != '{}')
@@ -139,7 +139,6 @@
     &lt;div class="date"&gt;
       &lt;label&gt;Date:&lt;/label&gt;
       $doc.display("_age_of_onset_date", $object)
-      &lt;span class="error"&gt;&lt;/span&gt;
     &lt;/div&gt;
     &lt;div class="age"&gt;
       &lt;label&gt;Age:&lt;/label&gt;
