@@ -749,6 +749,24 @@ document.observe('xwiki:dom:loaded', function()
              }
         }.bind(selectionSummary);
 
+        selectionSummary._getAgeOfOnsetSummary = function(qualifierElt) {
+          if (!qualifierElt) {
+            return undefined;
+          }
+          var ageOfOnsetDetails = qualifierElt.up('dd');
+          var ageOfOnsetDate = ageOfOnsetDetails.down('.fuzzy-date').__datePicker.getFormattedValue();
+          var ageOfOnsetAge = ageOfOnsetDetails.down('.pt-age-of-onset').value;
+          qualifierPreviewText = qualifierElt.title;
+          if (ageOfOnsetDate || ageOfOnsetAge) {
+            qualifierPreviewText += ' (';
+            ageOfOnsetDate &amp;&amp; (qualifierPreviewText += ageOfOnsetDate);
+            ageOfOnsetAge &amp;&amp; ageOfOnsetDate &amp;&amp; (qualifierPreviewText += ' / ');
+            ageOfOnsetAge &amp;&amp; (qualifierPreviewText += 'age ' + ageOfOnsetAge);
+            qualifierPreviewText += ')';
+          }
+          return qualifierPreviewText;
+        }.bind(selectionSummary);
+
         selectionSummary._preparePreview = function(pdItem) {
           var details ='';
           var commentPreview = pdItem.down('.comments-preview');
@@ -786,7 +804,13 @@ document.observe('xwiki:dom:loaded', function()
                  qualifierPreview = new Element('dd', {'class' : qualifier + '-preview preview' });
                  qualifierElt.up('dd').insert({after: qualifierPreview});
                }
-               qualifierPreview.update(qualifierElt.title);
+               var qualifierPreviewText;
+               if (qualifier == 'age_of_onset') {
+                 qualifierPreviewText = selectionSummary._getAgeOfOnsetSummary(qualifierElt);
+               } else {
+                 qualifierPreviewText = qualifierElt.title
+               }
+               qualifierPreview.update(qualifierPreviewText);
                details += qualifierElt.title;
              } else {
                if (qualifierPreview) {qualifierPreview .update('');}
@@ -1023,8 +1047,14 @@ document.observe('xwiki:dom:loaded', function()
                 var header = e.up();
                 var dataContainer = header.next();
                 var selectedOption = dataContainer.down("input[type='radio']:checked");
+                var summary;
+                if (dataContainer.hasClassName('age_of_onset')) {
+                  summary = selectionSummary._getAgeOfOnsetSummary(selectedOption);
+                } else {
+                  summary = selectedOption &amp;&amp; selectedOption.readAttribute('title');
+                }
                 var selectedName = new Element('span', {'class' : (selectedOption &amp;&amp; selectedOption.value &amp;&amp; 'selected' || 'none')}).update(
-                    selectedOption &amp;&amp; selectedOption.readAttribute('title') || ''
+                    summary || ''
                 );
                 header.insert({bottom: selectedName});
                 var cClassName = "collapsed";
@@ -1041,18 +1071,29 @@ document.observe('xwiki:dom:loaded', function()
                     }
                 });
                 dataContainer.select("input[type='radio']").each(function(radio) {
-                    radio.observe('click', function(){
+                    radio.observe('click', function() {
                         dataContainer.addClassName(cClassName);
-                        selectedName.update(radio.readAttribute('title'));
-                        if (radio.value) {
-                          selectedName.addClassName('selected');
-                          selectedName.removeClassName('none');
-                        } else {
-                          selectedName.removeClassName('selected');
-                          selectedName.addClassName('none');
-                        }
                         e.update(PhenoTips.widgets.OntologyBrowser.prototype._getExpandCollapseSymbol(true));
                     });
+                });
+                ['change', 'duration:format', 'xwiki:date:changed', 'value:change'].each(function(ev) {
+                  dataContainer.observe(ev, function(){
+                      var radio = dataContainer.down("input[type='radio']:checked");
+                      var summary;
+                      if (dataContainer.hasClassName('age_of_onset')) {
+                        summary = selectionSummary._getAgeOfOnsetSummary(radio);
+                      } else {
+                        summary = radio.title;
+                      }
+                      selectedName.update(summary);
+                      if (radio.value) {
+                        selectedName.addClassName('selected');
+                        selectedName.removeClassName('none');
+                      } else {
+                        selectedName.removeClassName('selected');
+                        selectedName.addClassName('none');
+                      }
+                  });
                 });
             });
         }.bind(selectionSummary);

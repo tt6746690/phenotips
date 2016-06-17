@@ -19,14 +19,15 @@ var PhenoTips = (function(PhenoTips) {
       // Attach handlers
       this._patientDobEl.observe('xwiki:date:changed', this._handlePatientDobChange);
       this.linkedDateEl.observe('xwiki:date:changed', this._handleDateChange);
+      this.linkedDateEl.observe('datepicker:init', this._handleDateChange);
 
       // If the datepicker has already been initialized, set the initial state
-      if (this.el.__datePicker && this.linkedDateEl.__datePicker) {
+      if (this.linkedDateEl.__datePicker) {
         this._handleDateChange();
       }
 
       // Save in the DOM
-      this.linkedDateEl.__ageCalculatedFromDate = this;
+      this.el.__ageCalculatedFromDate = this;
     },
 
     _handlePatientDobChange: function() {

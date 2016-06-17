@@ -35,13 +35,21 @@ var PhenoTips = (function(PhenoTips) {
         return;
       }
 
+      this._handleAgeChange = this._handleAgeChange.bind(this);
+
       // Attach handlers
-      el.observe('duration:format', this.handleAgeChange.bind(this));
+      el.observe('duration:format', this._handleAgeChange);
+      el.observe('duration:change', this._handleAgeChange);
+
+      // If the age has already been initialized, set the initial state
+      if (this.el.__ageCalculatedFromDate) {
+        this._handleAgeChange();
+      }
 
       el.__ageOfOnset = this;
     },
 
-    handleAgeChange: function() {
+    _handleAgeChange: function() {
       var ageMonths = this.el.title;
 
       var termToSelect;
@@ -57,8 +65,13 @@ var PhenoTips = (function(PhenoTips) {
           radioEl.disabled = false;
         } else {
           if (radioEl.value == termToSelect) {
+            // Expand the section containing this option in case it's collapsed
+            if (radioEl.up(1) && radioEl.up(1).hasClassName('collapsed')) {
+              radioEl.up(1).previous('.expand-tool').click();
+            }
             radioEl.disabled = false;
-            radioEl.click();
+            radioEl.checked = true;
+            radioEl.fire('value:change');
           } else {
             radioEl.checked = false;
             radioEl.disabled = true;
