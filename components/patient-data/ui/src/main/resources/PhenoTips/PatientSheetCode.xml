@@ -4669,10 +4669,12 @@ h1, h2, h3, h4 {
   padding: 0 1.2em 0.6em 1.2em;
   overflow: hidden;
 }
-.phenotype-details .age_of_onset .date label,
-.phenotype-details .age_of_onset .age label {
+#current-phenotype-selection .phenotype-details .age_of_onset .date label,
+#current-phenotype-selection .phenotype-details .age_of_onset .age label {
   float: left;
   line-height: 1.5em;
+  margin-right: 0.3em;
+  width: 2.7em;
 }
 .phenotype-details .age_of_onset .date,
 .phenotype-details .age_of_onset .age {
