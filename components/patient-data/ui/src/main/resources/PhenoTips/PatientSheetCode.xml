@@ -4738,7 +4738,7 @@ h1, h2, h3, h4 {
   font-style: italic;
 }
 .phenotype-details .LV_validation_message {
-	position: static;
+  position: static;
 }
 .phenotype-details .attachment-list .attachment-item,
 .phenotype-details .attachment-list .attachment-item input {
