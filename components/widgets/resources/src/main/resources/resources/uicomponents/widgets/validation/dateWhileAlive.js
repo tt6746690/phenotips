@@ -31,13 +31,13 @@ var PhenoTips = (function(PhenoTips) {
 
     // Currently only works with fuzzy date pickers
     _isDateWhileAlive: function() {
-      var bdayParts = this._patientDobEl.__datePicker.dateParts;
-      var ddayParts = this._patientDodEl.__datePicker.dateParts;
-      var thisDateParts = this.el.__datePicker.dateParts;
+      var bdayParts = this._patientDobEl && this._patientDobEl.__datePicker && this._patientDobEl.__datePicker.dateParts;
+      var ddayParts = this._patientDodEl && this._patientDodEl.__datePicker && this._patientDodEl.__datePicker.dateParts;
+      var thisDateParts = this.el && this.el.__datePicker && this.el.__datePicker.dateParts;
 
-      if (PhenoTips.widgets.FuzzyDatePicker.isDateAfter(thisDateParts, bdayParts)) {
+      if (bdayParts && thisDateParts && PhenoTips.widgets.FuzzyDatePicker.isDateAfter(thisDateParts, bdayParts)) {
         Validate.fail("$services.localization.render('phenotips.widgets.dateWhileAlive.dateBeforeBirth')");
-      } else if (PhenoTips.widgets.FuzzyDatePicker.isDateAfter(ddayParts, thisDateParts)) {
+      } else if (ddayParts && thisDateParts && PhenoTips.widgets.FuzzyDatePicker.isDateAfter(ddayParts, thisDateParts)) {
         Validate.fail("$services.localization.render('phenotips.widgets.dateWhileAlive.dateAfterDeath')");
       } else {
         return true;

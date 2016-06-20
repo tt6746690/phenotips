@@ -753,17 +753,23 @@ document.observe('xwiki:dom:loaded', function()
           if (!qualifierElt) {
             return undefined;
           }
-          var ageOfOnsetDetails = qualifierElt.up('dd');
-          var ageOfOnsetDate = ageOfOnsetDetails.down('.fuzzy-date').__datePicker.getFormattedValue();
-          var ageOfOnsetAge = ageOfOnsetDetails.down('.pt-age-of-onset').value;
+
           qualifierPreviewText = qualifierElt.title;
-          if (ageOfOnsetDate || ageOfOnsetAge) {
-            qualifierPreviewText += ' (';
-            ageOfOnsetDate &amp;&amp; (qualifierPreviewText += ageOfOnsetDate);
-            ageOfOnsetAge &amp;&amp; ageOfOnsetDate &amp;&amp; (qualifierPreviewText += ' / ');
-            ageOfOnsetAge &amp;&amp; (qualifierPreviewText += 'age ' + ageOfOnsetAge);
-            qualifierPreviewText += ')';
+
+          var ageOfOnsetDetails = qualifierElt.up('dd');
+          // If "Add details" was clicked, the date picker is not initialized yet
+          if (ageOfOnsetDetails.down('.fuzzy-date').__datePicker) {
+            var ageOfOnsetDate = ageOfOnsetDetails.down('.fuzzy-date').__datePicker.getFormattedValue();
+            var ageOfOnsetAge = ageOfOnsetDetails.down('.pt-age-of-onset').value;
+            if (ageOfOnsetDate || ageOfOnsetAge) {
+              qualifierPreviewText += ' (';
+              ageOfOnsetDate &amp;&amp; (qualifierPreviewText += ageOfOnsetDate);
+              ageOfOnsetAge &amp;&amp; ageOfOnsetDate &amp;&amp; (qualifierPreviewText += ' / ');
+              ageOfOnsetAge &amp;&amp; (qualifierPreviewText += 'age ' + ageOfOnsetAge);
+              qualifierPreviewText += ')';
+            }
           }
+
           return qualifierPreviewText;
         }.bind(selectionSummary);
 
