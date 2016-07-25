@@ -17,30 +17,18 @@
  */
 package org.phenotips.configuration;
 
+import java.util.List;
+
 import org.xwiki.component.annotation.Role;
 import org.xwiki.stability.Unstable;
 
-/**
- * Provides access to {@code RecordConfiguration patient record configurations}.
- *
- * @version $Id$
- * @since 1.0M9
- */
 @Unstable
 @Role
-public interface RecordConfigurationManager
-{
-    /**
-     * Retrieves the {@code RecordConfiguration patient record configuration} active for the current user.
-     *
-     * @return a valid configuration, either the global one or one configured, for example in one of the user's groups
-     */
-	@Deprecated
-    RecordConfiguration getActiveConfiguration();
+public interface RecordConfigurationModule {
 	
-	/**
-	 * Add JavaDoc
-	 */
-	RecordConfiguration getConfiguration(String recordType);
-	
+    void process(List<RecordSection> sections);
+    
+    int getPriority();
+    
+    String[] getSupportedRecordTypes();
 }

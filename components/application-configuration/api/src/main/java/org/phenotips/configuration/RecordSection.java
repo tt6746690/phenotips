@@ -74,4 +74,19 @@ public interface RecordSection
      *         configured or enabled
      */
     List<RecordElement> getEnabledElements();
+    
+    /**
+     * Add JavaDoc
+     */
+    boolean setDisabled();
+    
+    /**
+     * Add JavaDoc
+     */
+    boolean setExpandedByDefault();
+    
+    /**
+     * Add JavaDoc
+     */
+    List<RecordElement> setElements();
 }

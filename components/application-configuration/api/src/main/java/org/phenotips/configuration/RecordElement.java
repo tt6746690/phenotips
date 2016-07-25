@@ -72,4 +72,9 @@ public interface RecordElement
      * @return a valid section
      */
     RecordSection getContainingSection();
+    
+    /**
+     * Add JavaDoc
+     */
+    boolean setDisabled();
 }
