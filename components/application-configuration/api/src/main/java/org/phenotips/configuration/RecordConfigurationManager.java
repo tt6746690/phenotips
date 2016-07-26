@@ -35,12 +35,12 @@ public interface RecordConfigurationManager
      *
      * @return a valid configuration, either the global one or one configured, for example in one of the user's groups
      */
-	@Deprecated
+    @Deprecated
     RecordConfiguration getActiveConfiguration();
 	
 	/**
 	 * Add JavaDoc
 	 */
-	RecordConfiguration getConfiguration(String recordType);
+    RecordConfiguration getConfiguration(String recordType);
 	
 }

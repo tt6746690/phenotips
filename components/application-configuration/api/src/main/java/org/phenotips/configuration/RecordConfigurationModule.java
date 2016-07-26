@@ -17,8 +17,6 @@
  */
 package org.phenotips.configuration;
 
-import java.util.List;
-
 import org.xwiki.component.annotation.Role;
 import org.xwiki.stability.Unstable;
 
@@ -26,7 +24,7 @@ import org.xwiki.stability.Unstable;
 @Role
 public interface RecordConfigurationModule {
 	
-    void process(List<RecordSection> sections);
+	RecordConfiguration process(RecordConfiguration config);
     
     int getPriority();
     

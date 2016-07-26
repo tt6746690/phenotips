@@ -54,7 +54,7 @@ import com.xpn.xwiki.objects.classes.BaseClass;
  * @version $Id$
  * @since 1.0M9
  */
-public class GlobalRecordConfiguration implements RecordConfiguration
+public class GlobalRecordConfigurationModule implements RecordConfiguration
 {
     /** The location where preferences are stored. */
     private static final EntityReference PREFERENCES_LOCATION = new EntityReference("WebHome", EntityType.DOCUMENT,
@@ -73,7 +73,7 @@ public class GlobalRecordConfiguration implements RecordConfiguration
     protected UIExtensionFilter orderFilter;
 
     /** Logging helper object. */
-    private Logger logger = LoggerFactory.getLogger(GlobalRecordConfiguration.class);
+    private Logger logger = LoggerFactory.getLogger(GlobalRecordConfigurationModule.class);
 
     /**
      * Simple constructor passing all the needed components.
@@ -82,7 +82,7 @@ public class GlobalRecordConfiguration implements RecordConfiguration
      * @param uixManager the UIExtension manager
      * @param orderFilter UIExtension filter for ordering sections and elements
      */
-    public GlobalRecordConfiguration(Provider<XWikiContext> xcontextProvider, UIExtensionManager uixManager,
+    public GlobalRecordConfigurationModule(Provider<XWikiContext> xcontextProvider, UIExtensionManager uixManager,
         UIExtensionFilter orderFilter)
     {
         this.xcontextProvider = xcontextProvider;

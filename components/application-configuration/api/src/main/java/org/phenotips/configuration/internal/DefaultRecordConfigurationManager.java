@@ -20,17 +20,26 @@ package org.phenotips.configuration.internal;
 import org.phenotips.Constants;
 import org.phenotips.configuration.RecordConfiguration;
 import org.phenotips.configuration.RecordConfigurationManager;
+import org.phenotips.configuration.RecordConfigurationModule;
+import org.phenotips.configuration.RecordSection;
 import org.phenotips.configuration.internal.configured.ConfiguredRecordConfiguration;
 import org.phenotips.configuration.internal.configured.CustomConfiguration;
 import org.phenotips.configuration.internal.global.GlobalRecordConfiguration;
-
+import org.phenotips.configuration.internal.global.GlobalRecordConfigurationModule;
 import org.xwiki.bridge.DocumentAccessBridge;
 import org.xwiki.component.annotation.Component;
+import org.xwiki.component.manager.ComponentLookupException;
+import org.xwiki.component.manager.ComponentManager;
 import org.xwiki.model.EntityType;
 import org.xwiki.model.reference.DocumentReferenceResolver;
 import org.xwiki.model.reference.EntityReference;
 import org.xwiki.uiextension.UIExtensionFilter;
 import org.xwiki.uiextension.UIExtensionManager;
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -87,7 +96,65 @@ public class DefaultRecordConfigurationManager implements RecordConfigurationMan
     @Inject
     @Named("current")
     private DocumentReferenceResolver<String> referenceParser;
+    
+    @Inject
+    @Named("wiki")
+    private ComponentManager cm;
+    
+    @Inject
+    private RecordConfigurationModule managers;
+    
+    /* New method
+     * Gets all config modules
+     * Orders by priority
+     * Lists sections from a new empty list
+     * */
+    public RecordConfiguration getConfiguration(String recordType)
+    {
+        RecordConfiguration config = null;   	
+    	for (RecordConfigurationModule service: get()) {
+    		try {
+    			config = service.process(config);
+    			if (config != null) {
+    				return config;
+    			}
+    		} catch (Exception ex) {
+    			this.logger.warn("*Display error message*");
+    		}    		
+    	}
+        return null;
+    }
 
+    public List<RecordConfigurationModule> get()
+    {
+    	try{
+    		List<RecordConfigurationModule> sections = new LinkedList<>();
+    		sections.addAll(this.cm.<RecordConfigurationModule>getInstanceList(RecordConfigurationModule.class));
+    		Collections.sort(sections, RecordSectionComparator.INSTANCE);
+    		return sections;
+    	} catch (ComponentLookupException ex) {
+    		this.logger.warn("*Display error message*");
+    	}
+    	return null;
+    }
+    
+    private static final class RecordSectionComparator implements Comparator<RecordConfigurationModule>
+    {
+    	private static final RecordSectionComparator INSTANCE = new RecordSectionComparator();
+    			
+		@Override
+		public int compare(RecordConfigurationModule o1, RecordConfigurationModule o2) {
+			int result = o2.getPriority() - o1.getPriority();
+			//If they happen to have the same priority, order alphabetically by their name
+			if(result == 0) {
+				result = o1.getClass().getSimpleName().compareToIgnoreCase(o2.getClass().getSimpleName());
+			}
+			return result;
+		}
+    	
+    }
+
+    @Deprecated
     @Override
     public RecordConfiguration getActiveConfiguration()
     {
@@ -104,6 +171,7 @@ public class DefaultRecordConfigurationManager implements RecordConfigurationMan
      *
      * @return a form configuration, if one is bound to the current document, or {@code null} otherwise
      */
+   
     private RecordConfiguration getBoundConfiguration()
     {
         if (this.dab.getCurrentDocumentReference() == null) {
