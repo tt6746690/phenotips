@@ -19,18 +19,24 @@ package org.phenotips.configuration.internal.configured;
 
 import org.phenotips.components.ComponentManagerRegistry;
 import org.phenotips.configuration.RecordConfiguration;
+import org.phenotips.configuration.RecordConfigurationModule;
 import org.phenotips.configuration.RecordSection;
+import org.phenotips.configuration.internal.global.DefaultRecordSection;
 import org.phenotips.configuration.internal.global.GlobalRecordConfiguration;
-
+import org.phenotips.configuration.internal.global.GlobalRecordConfigurationModule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xwiki.component.manager.ComponentLookupException;
 import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.model.reference.DocumentReferenceResolver;
+import org.xwiki.uiextension.UIExtension;
 import org.xwiki.uiextension.UIExtensionFilter;
 import org.xwiki.uiextension.UIExtensionManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.inject.Provider;
@@ -46,11 +52,17 @@ import com.xpn.xwiki.XWikiContext;
  * @version $Id$
  * @since 1.0M9
  */
-public class StudyRecordConfigurationModule extends GlobalRecordConfiguration implements RecordConfiguration
+public class StudyRecordConfigurationModule extends GlobalRecordConfiguration implements RecordConfigurationModule
 {
+	  /** The name of the UIX parameter used for specifying the order of fields and sections. */
+    private static final String SORT_PARAMETER_NAME = "order";
+    
     /** The custom configuration defining this patient record configuration. */
     private final CustomConfiguration configuration;
 
+    /** Logging helper object. */
+    private Logger logger = LoggerFactory.getLogger(GlobalRecordConfigurationModule.class);
+    
     /**
      * Simple constructor passing all the needed components.
      *
@@ -66,44 +78,33 @@ public class StudyRecordConfigurationModule extends GlobalRecordConfiguration im
         this.configuration = configuration;
     }
 
-    @Override
-    public List<RecordSection> getAllSections()
-    {
-        List<RecordSection> result = new ArrayList<RecordSection>();
-        List<RecordSection> allSections = super.getAllSections();
-        final List<String> overrides = this.configuration.getSectionsOverride();
-        for (RecordSection section : allSections) {
-            result.add(new ConfiguredRecordSection(this.configuration, section.getExtension(), this.uixManager,
-                this.orderFilter));
+	@Override
+	public RecordConfiguration process(RecordConfiguration config)
+	{
+		List<RecordSection> result = new LinkedList<RecordSection>();
+        List<UIExtension> sections = this.uixManager.get("org.phenotips.patientSheet.content");
+        sections = this.orderFilter.filter(sections, SORT_PARAMETER_NAME);
+        for (UIExtension sectionExtension : sections) {
+            RecordSection section = new DefaultRecordSection(sectionExtension, this.uixManager, this.orderFilter);
+            result.add(section);
         }
-        if (overrides != null && !overrides.isEmpty()) {
-            Collections.<RecordSection>sort(result, new Comparator<RecordSection>()
-            {
-                @Override
-                public int compare(RecordSection o1, RecordSection o2)
-                {
-                    int i1 = overrides.indexOf(o1.getExtension().getId());
-                    int i2 = overrides.indexOf(o2.getExtension().getId());
-                    return (i2 == -1 || i1 == -1) ? (i2 - i1) : (i1 - i2);
-                }
-            });
-        }
-        return Collections.unmodifiableList(result);
-    }
+        config.setSections(result);
+        return config;
+	}
 
-    @Override
-    public DocumentReference getPhenotypeMapping()
-    {
-        try {
-            String mapping = this.configuration.getPhenotypeMapping();
-            if (StringUtils.isNotBlank(mapping)) {
-                DocumentReferenceResolver<String> resolver = ComponentManagerRegistry.getContextComponentManager()
-                    .getInstance(DocumentReferenceResolver.TYPE_STRING, "current");
-                return resolver.resolve(mapping);
-            }
-        } catch (ComponentLookupException e) {
-            // Shouldn't happen, base components must be available
-        }
-        return super.getPhenotypeMapping();
-    }
+	@Override
+	public int getPriority()
+	{
+	    return 100;
+	}
+
+	@Override
+	public String[] getSupportedRecordTypes()
+	{
+        String[] recType = {"patient"};
+	    
+	    return recType;
+	}
+
+    
 }

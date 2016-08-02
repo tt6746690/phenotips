@@ -78,15 +78,15 @@ public interface RecordSection
     /**
      * Add JavaDoc
      */
-    boolean setDisabled();
+    void setEnabled(boolean isEnabled);
     
     /**
      * Add JavaDoc
      */
-    boolean setExpandedByDefault();
+    void setExpandedByDefault(boolean isExpanded);
     
     /**
      * Add JavaDoc
      */
-    List<RecordElement> setElements();
+    void setElements(List<RecordElement> element);
 }

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses/
  */
-package org.phenotips.configuration.internal.global;
+package org.phenotips.configuration.internal;
 
 import org.phenotips.components.ComponentManagerRegistry;
 import org.phenotips.configuration.RecordConfiguration;
@@ -54,55 +54,25 @@ import com.xpn.xwiki.objects.classes.BaseClass;
  * @version $Id$
  * @since 1.0M9
  */
-public class GlobalRecordConfiguration implements RecordConfiguration
+public class DefaultRecordConfiguration implements RecordConfiguration
 {
     /** The location where preferences are stored. */
     private static final EntityReference PREFERENCES_LOCATION = new EntityReference("WebHome", EntityType.DOCUMENT,
         new EntityReference("data", EntityType.SPACE));
 
-    /** The name of the UIX parameter used for specifying the order of fields and sections. */
-    private static final String SORT_PARAMETER_NAME = "order";
-
-    /** Provides access to the current request context. */
-    protected Provider<XWikiContext> xcontextProvider;
-
-    /** Lists the patient form sections and fields. */
-    protected UIExtensionManager uixManager;
-
-    /** Sorts fields by their declared order. */
-    protected UIExtensionFilter orderFilter;
-    
-    protected List<RecordSection> sectionList;
-
     /** Logging helper object. */
-    private Logger logger = LoggerFactory.getLogger(GlobalRecordConfiguration.class);
+    private Logger logger = LoggerFactory.getLogger(DefaultRecordConfiguration.class);
 
-    /**
-     * Simple constructor passing all the needed components.
-     *
-     * @param xcontextProvider provides access to the current request context
-     * @param uixManager the UIExtension manager
-     * @param orderFilter UIExtension filter for ordering sections and elements
-     */
-    public GlobalRecordConfiguration(Provider<XWikiContext> xcontextProvider, UIExtensionManager uixManager,
-        UIExtensionFilter orderFilter)
-    {
-        this.xcontextProvider = xcontextProvider;
-        this.uixManager = uixManager;
-        this.orderFilter = orderFilter;
-    }
-
+    private List<RecordSection> sections;
     @Override
     public List<RecordSection> getAllSections()
     {
-        List<RecordSection> result = new LinkedList<RecordSection>();
-        List<UIExtension> sections = this.uixManager.get("org.phenotips.patientSheet.content");
-        sections = this.orderFilter.filter(sections, SORT_PARAMETER_NAME);
-        for (UIExtension sectionExtension : sections) {
-            RecordSection section = new DefaultRecordSection(sectionExtension, this.uixManager, this.orderFilter);
-            result.add(section);
-        }
-        return Collections.unmodifiableList(result);
+        return Collections.unmodifiableList(sections);
+    }
+    
+    public void setSections(List<RecordSection> sections)
+    {
+    	this.sections = sections;
     }
 
     @Override
@@ -116,11 +86,6 @@ public class GlobalRecordConfiguration implements RecordConfiguration
         }
         return Collections.unmodifiableList(result);
     }
-    
-    @Override
-	public void setSections(List<RecordSection> sections) {
-	    this.sectionList = sections;		
-	}
 
     @Override
     public List<String> getEnabledFieldNames()

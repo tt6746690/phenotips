@@ -24,7 +24,7 @@ import org.xwiki.stability.Unstable;
 @Role
 public interface RecordConfigurationModule {
 	
-	RecordConfiguration process(RecordConfiguration config);
+    RecordConfiguration process(RecordConfiguration config);
     
     int getPriority();
     

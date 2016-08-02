@@ -107,4 +107,10 @@ public class DefaultRecordElement implements RecordElement
     {
         return getName();
     }
+
+	@Override
+	public void setEnabled(boolean isEnabled) {
+		// TODO Auto-generated method stub
+		
+	}
 }

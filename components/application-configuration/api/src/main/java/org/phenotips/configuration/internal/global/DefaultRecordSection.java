@@ -46,6 +46,10 @@ public class DefaultRecordSection implements RecordSection
 
     /** Sorts fields by their declared order. */
     protected final UIExtensionFilter orderFilter;
+    
+    protected boolean enabled;
+    
+    protected boolean expanded;
 
     /**
      * Simple constructor passing all the needed components.
@@ -59,6 +63,8 @@ public class DefaultRecordSection implements RecordSection
         this.extension = extension;
         this.uixManager = uixManager;
         this.orderFilter = orderFilter;
+        this.enabled = isEnabled(this.extension);
+        this.expanded = isExpandedByDefault();
     }
 
     @Override
@@ -81,7 +87,7 @@ public class DefaultRecordSection implements RecordSection
     @Override
     public boolean isEnabled()
     {
-        return isEnabled(this.extension);
+        return this.enabled;
     }
 
     @Override
@@ -122,6 +128,24 @@ public class DefaultRecordSection implements RecordSection
         result.append(StringUtils.join(getEnabledElements(), ", "));
         result.append(']');
         return result.toString();
+    }
+    
+    @Override
+    public void setEnabled(boolean enabled)
+    {
+    	this.enabled = enabled;
+    }
+    
+    @Override
+    public void setExpandedByDefault(boolean expanded)
+    {
+        this.expanded = expanded;
+    }
+    
+    @Override
+    public void setElements(List<RecordElement> elements)
+    {
+    	//this.elements = elements;
     }
 
     /**

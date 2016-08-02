@@ -76,5 +76,5 @@ public interface RecordElement
     /**
      * Add JavaDoc
      */
-    boolean setDisabled();
+    void setEnabled(boolean isEnabled);
 }

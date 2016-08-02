@@ -56,6 +56,11 @@ public interface RecordConfiguration
      * @return an unmodifiable ordered list of sections, or an empty list if none are defined
      */
     List<RecordSection> getAllSections();
+    
+    /**
+     * Add JavaDoc
+     */
+    void setSections(List<RecordSection> sections);
 
     /**
      * The list of fields displayed in the patient record.
@@ -72,14 +77,6 @@ public interface RecordConfiguration
      *         configuration is missing
      */
     List<String> getEnabledNonIdentifiableFieldNames();
-
-    /**
-     * The list of possible fields defined in the application. This doesn't include metadata stored in separate
-     * entities, such as measurements, relatives, additional files, etc.
-     *
-     * @return an unmodifiable ordered list of field names, empty if none are available or the configuration is missing
-     */
-    List<String> getAllFieldNames();
 
     /**
      * The custom predefined phenotypes displayed in the "Clinical Symptoms" section are configured in a document, and
