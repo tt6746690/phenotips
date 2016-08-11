@@ -58,7 +58,7 @@ public interface RecordConfiguration
     List<RecordSection> getAllSections();
     
     /**
-     * Add JavaDoc
+     * Sets which sections will be added to the record configuration
      */
     void setSections(List<RecordSection> sections);
 

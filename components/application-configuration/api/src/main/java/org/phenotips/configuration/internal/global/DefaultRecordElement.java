@@ -41,6 +41,8 @@ public class DefaultRecordElement implements RecordElement
 
     /** @see #getContainingSection() */
     private final RecordSection section;
+    
+    protected boolean enabled;
 
     /**
      * Simple constructor passing all the needed components.
@@ -109,8 +111,8 @@ public class DefaultRecordElement implements RecordElement
     }
 
 	@Override
-	public void setEnabled(boolean isEnabled) {
-		// TODO Auto-generated method stub
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 		
 	}
 }

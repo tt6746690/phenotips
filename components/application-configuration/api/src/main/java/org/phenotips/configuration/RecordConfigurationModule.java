@@ -24,9 +24,21 @@ import org.xwiki.stability.Unstable;
 @Role
 public interface RecordConfigurationModule {
 	
+	/**
+	 * Configures how the patient record appears.
+	 * 
+	 * @param documents the previous configuration
+	 * @return {@link RecordConfiguration} Patient record is configured to the user's preference
+	 */
     RecordConfiguration process(RecordConfiguration config);
     
+    /**
+     * @return a positive number
+     */
     int getPriority();
     
+    /**
+     * @return the record type.
+     */
     String[] getSupportedRecordTypes();
 }

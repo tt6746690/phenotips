@@ -15,34 +15,31 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses/
  */
-package org.phenotips.configuration.internal.global;
+package org.phenotips.configuration.internal.consent;
 
-import org.phenotips.configuration.RecordConfiguration;
-import org.phenotips.configuration.RecordConfigurationModule;
-import org.phenotips.configuration.RecordSection;
-
-import org.xwiki.uiextension.UIExtension;
-import org.xwiki.uiextension.UIExtensionFilter;
-import org.xwiki.uiextension.UIExtensionManager;
-
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.inject.Provider;
+
+import org.phenotips.configuration.RecordConfiguration;
+import org.phenotips.configuration.RecordConfigurationModule;
+import org.phenotips.configuration.RecordElement;
+import org.phenotips.configuration.RecordSection;
+import org.phenotips.configuration.internal.DefaultRecordConfiguration;
+import org.phenotips.data.Patient;
+import org.xwiki.uiextension.UIExtensionFilter;
+import org.xwiki.uiextension.UIExtensionManager;
 
 import com.xpn.xwiki.XWikiContext;
 
-/**
- * Default (global) implementation of the {@link RecordConfiguration} role.
- *
- * @version $Id$
- * @since 1.0M9
- */
-public class GlobalRecordConfigurationModule implements RecordConfigurationModule
-{
-    /** The name of the UIX parameter used for specifying the order of fields and sections. */
-    private static final String SORT_PARAMETER_NAME = "order";
-
+public class ConsentsRecordConfigurationModule extends DefaultConsentAuthorizer implements RecordConfigurationModule {
+   
+    @Inject 
+    private Patient patient;
+    
     /** Provides access to the current request context. */
     protected Provider<XWikiContext> xcontextProvider;
 
@@ -53,32 +50,36 @@ public class GlobalRecordConfigurationModule implements RecordConfigurationModul
     protected UIExtensionFilter orderFilter;
 
     @Override
-	public RecordConfiguration process(RecordConfiguration config)
-	{			
-        List<RecordSection> result = new LinkedList<RecordSection>();
-        List<UIExtension> sections = this.uixManager.get("org.phenotips.patientSheet.content");
-        sections = this.orderFilter.filter(sections, SORT_PARAMETER_NAME);
-        for (UIExtension sectionExtension : sections) {
-            RecordSection section = new DefaultRecordSection(sectionExtension, this.uixManager, this.orderFilter);
-            result.add(section);
-        }
-        config.setSections(result);
-        return config;
+	public RecordConfiguration process(RecordConfiguration config) 
+    {
+        RecordConfiguration updatedConfigs = new DefaultRecordConfiguration();
+        List<RecordElement> elementList = new LinkedList<>();
+    	List<RecordSection> sectionList = new LinkedList<>();  	
+    	    	
+		for (RecordSection section : config.getAllSections()) {
+			// Filters elements by consents
+			elementList = filterForm(section.getAllElements(), this.patient);
+		    if (section.isEnabled()) {
+		    	section.setElements(elementList);
+		    	sectionList.add(section);
+		    }
+		}
+		updatedConfigs.setSections(sectionList);
+		
+        return updatedConfigs;
 	}
 
-	@Override
-	public int getPriority()
-	{
-	    return 0;
+    @Override
+    public int getPriority() 
+    {
+	    return 300;
 	}
 
-	@Override
-	public String[] getSupportedRecordTypes()
-	{
-	    String[] recType = {"patient"};
-	    
+    @Override
+    public String[] getSupportedRecordTypes()
+    {
+        String[] recType = {"patient"};
 	    return recType;
 	}
 
-   
 }

@@ -50,6 +50,8 @@ public class DefaultRecordSection implements RecordSection
     protected boolean enabled;
     
     protected boolean expanded;
+    
+    protected List<RecordElement> elements;
 
     /**
      * Simple constructor passing all the needed components.
@@ -145,7 +147,7 @@ public class DefaultRecordSection implements RecordSection
     @Override
     public void setElements(List<RecordElement> elements)
     {
-    	//this.elements = elements;
+    	this.elements = elements;
     }
 
     /**

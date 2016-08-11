@@ -59,11 +59,16 @@ public class DefaultRecordConfiguration implements RecordConfiguration
     /** The location where preferences are stored. */
     private static final EntityReference PREFERENCES_LOCATION = new EntityReference("WebHome", EntityType.DOCUMENT,
         new EntityReference("data", EntityType.SPACE));
+    
+    /** Provides access to the current request context. */
+    protected Provider<XWikiContext> xcontextProvider;
 
     /** Logging helper object. */
     private Logger logger = LoggerFactory.getLogger(DefaultRecordConfiguration.class);
 
+    /** List of all Record Sections */
     private List<RecordSection> sections;
+    
     @Override
     public List<RecordSection> getAllSections()
     {

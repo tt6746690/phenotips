@@ -103,23 +103,18 @@ public class DefaultRecordConfigurationManager implements RecordConfigurationMan
     
     @Inject
     private RecordConfigurationModule managers;
-    
-    /* New method
-     * Gets all config modules
-     * Orders by priority
-     * Lists sections from a new empty list
-     * */
+
     public RecordConfiguration getConfiguration(String recordType)
     {
-        RecordConfiguration config = null;   	
-    	for (RecordConfigurationModule service: get()) {
-    		try {
-    			config = service.process(config);
-    			if (config != null) {
-    				return config;
-    			}
-    		} catch (Exception ex) {
-    			this.logger.warn("*Display error message*");
+        RecordConfiguration config = new DefaultRecordConfiguration();   	
+        for (RecordConfigurationModule service: get()) {
+    	    try {
+    		    config = service.process(config);
+    		    if (config != null) {
+    			    return config;
+    		    }
+    	    } catch (Exception ex) {
+    		    this.logger.warn("Failed to read the record configuration: {}", ex.getMessage());
     		}    		
     	}
         return null;
@@ -127,30 +122,30 @@ public class DefaultRecordConfigurationManager implements RecordConfigurationMan
 
     public List<RecordConfigurationModule> get()
     {
-    	try{
-    		List<RecordConfigurationModule> sections = new LinkedList<>();
-    		sections.addAll(this.cm.<RecordConfigurationModule>getInstanceList(RecordConfigurationModule.class));
-    		Collections.sort(sections, RecordSectionComparator.INSTANCE);
-    		return sections;
-    	} catch (ComponentLookupException ex) {
-    		this.logger.warn("*Display error message*");
-    	}
-    	return null;
+        try {
+    	    List<RecordConfigurationModule> sections = new LinkedList<>();
+    	    sections.addAll(this.cm.<RecordConfigurationModule>getInstanceList(RecordConfigurationModule.class));
+    	    Collections.sort(sections, RecordSectionComparator.INSTANCE);
+    	    return sections;
+        } catch (ComponentLookupException ex) {
+    	    this.logger.warn("Failed to create the list: {}", ex.getMessage());
+        }
+        return null;
     }
     
     private static final class RecordSectionComparator implements Comparator<RecordConfigurationModule>
     {
-    	private static final RecordSectionComparator INSTANCE = new RecordSectionComparator();
+        private static final RecordSectionComparator INSTANCE = new RecordSectionComparator();
     			
-		@Override
-		public int compare(RecordConfigurationModule o1, RecordConfigurationModule o2) {
-			int result = o2.getPriority() - o1.getPriority();
-			//If they happen to have the same priority, order alphabetically by their name
-			if(result == 0) {
-				result = o1.getClass().getSimpleName().compareToIgnoreCase(o2.getClass().getSimpleName());
-			}
-			return result;
-		}
+	    @Override
+	    public int compare(RecordConfigurationModule o1, RecordConfigurationModule o2) {
+		    int result = o2.getPriority() - o1.getPriority();
+		    //If they happen to have the same priority, order alphabetically by their name
+		    if(result == 0) {
+			    result = o1.getClass().getSimpleName().compareToIgnoreCase(o2.getClass().getSimpleName());
+		    }
+		    return result;
+	    }
     	
     }
 

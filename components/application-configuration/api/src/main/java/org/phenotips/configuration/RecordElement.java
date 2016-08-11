@@ -74,7 +74,7 @@ public interface RecordElement
     RecordSection getContainingSection();
     
     /**
-     * Add JavaDoc
+     * Sets whether this element is going to be displayed in the patient record or not.
      */
-    void setEnabled(boolean isEnabled);
+    void setEnabled(boolean enabled);
 }

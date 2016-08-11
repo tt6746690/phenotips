@@ -39,7 +39,9 @@ public interface RecordConfigurationManager
     RecordConfiguration getActiveConfiguration();
 	
 	/**
-	 * Add JavaDoc
+	 * Retrieves the {@code DefaultRecordConfiguration patient record configuration} active for the curent user.
+	 * 
+	 * @return a valid configuration for the patient record
 	 */
     RecordConfiguration getConfiguration(String recordType);
 	

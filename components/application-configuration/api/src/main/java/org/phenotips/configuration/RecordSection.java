@@ -55,7 +55,7 @@ public interface RecordSection
     /**
      * Whether this section should be expanded and fully visible in edit mode by default.
      *
-     * @return {@code true} if this section must be expanded, {@code false} otherwis
+     * @return {@code true} if this section must be expanded, {@code false} otherwise
      */
     boolean isExpandedByDefault();
 
@@ -76,17 +76,17 @@ public interface RecordSection
     List<RecordElement> getEnabledElements();
     
     /**
-     * Add JavaDoc
+     * Sets whether this section and its elements are going to be displayed in the patient record or not.
      */
-    void setEnabled(boolean isEnabled);
+    void setEnabled(boolean enabled);
     
     /**
-     * Add JavaDoc
+     * Sets whether this section should be expanded and fully visible in edit mode by default.
      */
-    void setExpandedByDefault(boolean isExpanded);
+    void setExpandedByDefault(boolean expanded);
     
     /**
-     * Add JavaDoc
+     * Sets the list of elements configured in this section
      */
     void setElements(List<RecordElement> element);
 }
