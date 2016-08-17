@@ -53,6 +53,7 @@ import com.xpn.xwiki.objects.classes.BaseClass;
  *
  * @version $Id$
  * @since 1.0M9
+ * @deprecated
  */
 public class GlobalRecordConfiguration implements RecordConfiguration
 {

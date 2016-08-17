@@ -339,47 +339,6 @@ public class GlobalRecordConfigurationTest
         Assert.assertEquals(expectedFields, c.getEnabledFieldNames());
     }
 
-    /** Basic tests for {@link GlobalRecordConfiguration#getAllFieldNames()}. */
-    @Test
-    public void getAllFieldNames() throws ComponentLookupException, XWikiException
-    {
-        XWikiContext context = mock(XWikiContext.class);
-        when(this.xcp.get()).thenReturn(context);
-        XWiki x = mock(XWiki.class);
-        when(context.getWiki()).thenReturn(x);
-        XWikiDocument doc = mock(XWikiDocument.class);
-        when(x.getDocument(Patient.CLASS_REFERENCE, context)).thenReturn(doc);
-        BaseClass c = mock(BaseClass.class);
-        when(doc.getXClass()).thenReturn(c);
-        String[] props = new String[] { "external_id", "first_name", "last_name", "gender" };
-        when(c.getPropertyNames()).thenReturn(props);
-
-        List<String> expectedFields = new LinkedList<String>();
-        expectedFields.add("external_id");
-        expectedFields.add("first_name");
-        expectedFields.add("last_name");
-        expectedFields.add("gender");
-
-        RecordConfiguration config =
-            new GlobalRecordConfiguration(this.xcp, mock(UIExtensionManager.class), mock(UIExtensionFilter.class));
-        Assert.assertEquals(expectedFields, config.getAllFieldNames());
-    }
-
-    /** {@link GlobalRecordConfiguration#getAllFieldNames()} catches exceptions. */
-    @Test
-    public void getAllFieldNamesWithException() throws ComponentLookupException, XWikiException
-    {
-        XWikiContext context = mock(XWikiContext.class);
-        when(this.xcp.get()).thenReturn(context);
-        XWiki x = mock(XWiki.class);
-        when(context.getWiki()).thenReturn(x);
-        when(x.getDocument(Patient.CLASS_REFERENCE, context)).thenThrow(new XWikiException());
-
-        RecordConfiguration config =
-            new GlobalRecordConfiguration(this.xcp, mock(UIExtensionManager.class), mock(UIExtensionFilter.class));
-        Assert.assertTrue(config.getAllFieldNames().isEmpty());
-    }
-
     /** Basic tests for {@link GlobalRecordConfiguration#getPhenotypeMapping()}. */
     @Test
     public void getPhenotypeMapping() throws ComponentLookupException, XWikiException

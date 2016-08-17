@@ -22,6 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Provider;
 
 import org.phenotips.configuration.RecordConfiguration;
@@ -35,8 +36,9 @@ import org.xwiki.uiextension.UIExtensionManager;
 
 import com.xpn.xwiki.XWikiContext;
 
-public class ConsentsRecordConfigurationModule extends DefaultConsentAuthorizer implements RecordConfigurationModule {
-   
+//@Named("Consents")
+public class ConsentsRecordConfigurationModule extends DefaultConsentAuthorizer implements RecordConfigurationModule 
+{   
     @Inject 
     private Patient patient;
     
@@ -50,30 +52,30 @@ public class ConsentsRecordConfigurationModule extends DefaultConsentAuthorizer 
     protected UIExtensionFilter orderFilter;
 
     @Override
-	public RecordConfiguration process(RecordConfiguration config) 
+    public RecordConfiguration process(RecordConfiguration config) 
     {
         RecordConfiguration updatedConfigs = new DefaultRecordConfiguration();
         List<RecordElement> elementList = new LinkedList<>();
-    	List<RecordSection> sectionList = new LinkedList<>();  	
+        List<RecordSection> sectionList = new LinkedList<>();  	
     	    	
-		for (RecordSection section : config.getAllSections()) {
-			// Filters elements by consents
-			elementList = filterForm(section.getAllElements(), this.patient);
-		    if (section.isEnabled()) {
-		    	section.setElements(elementList);
-		    	sectionList.add(section);
+	    for (RecordSection section : config.getAllSections()) {
+		    // Filters elements by consents
+		    elementList = filterForm(section.getAllElements(), this.patient);
+            if (section.isEnabled()) {
+		        section.setElements(elementList);
+		        sectionList.add(section);
 		    }
-		}
-		updatedConfigs.setSections(sectionList);
+        }
+        updatedConfigs.setSections(sectionList);
 		
         return updatedConfigs;
-	}
+    }
 
     @Override
     public int getPriority() 
     {
 	    return 300;
-	}
+    }
 
     @Override
     public String[] getSupportedRecordTypes()

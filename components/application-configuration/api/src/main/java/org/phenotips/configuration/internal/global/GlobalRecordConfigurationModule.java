@@ -20,7 +20,7 @@ package org.phenotips.configuration.internal.global;
 import org.phenotips.configuration.RecordConfiguration;
 import org.phenotips.configuration.RecordConfigurationModule;
 import org.phenotips.configuration.RecordSection;
-
+import org.phenotips.configuration.internal.DefaultRecordConfiguration;
 import org.xwiki.uiextension.UIExtension;
 import org.xwiki.uiextension.UIExtensionFilter;
 import org.xwiki.uiextension.UIExtensionManager;
@@ -28,6 +28,8 @@ import org.xwiki.uiextension.UIExtensionManager;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Provider;
 
 import com.xpn.xwiki.XWikiContext;
@@ -47,23 +49,27 @@ public class GlobalRecordConfigurationModule implements RecordConfigurationModul
     protected Provider<XWikiContext> xcontextProvider;
 
     /** Lists the patient form sections and fields. */
+    @Inject
     protected UIExtensionManager uixManager;
 
     /** Sorts fields by their declared order. */
+    @Inject
+    @Named("sortByParameter")
     protected UIExtensionFilter orderFilter;
 
     @Override
 	public RecordConfiguration process(RecordConfiguration config)
 	{			
         List<RecordSection> result = new LinkedList<RecordSection>();
+        RecordConfiguration updatedConfig = new DefaultRecordConfiguration();
         List<UIExtension> sections = this.uixManager.get("org.phenotips.patientSheet.content");
         sections = this.orderFilter.filter(sections, SORT_PARAMETER_NAME);
         for (UIExtension sectionExtension : sections) {
             RecordSection section = new DefaultRecordSection(sectionExtension, this.uixManager, this.orderFilter);
             result.add(section);
         }
-        config.setSections(result);
-        return config;
+        updatedConfig.setSections(result);
+        return updatedConfig;
 	}
 
 	@Override
