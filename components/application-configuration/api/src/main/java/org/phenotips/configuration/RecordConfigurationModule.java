@@ -20,7 +20,7 @@ package org.phenotips.configuration;
 import org.xwiki.component.annotation.Role;
 import org.xwiki.stability.Unstable;
 
-@Unstable
+//@Unstable
 @Role
 public interface RecordConfigurationModule {
 	

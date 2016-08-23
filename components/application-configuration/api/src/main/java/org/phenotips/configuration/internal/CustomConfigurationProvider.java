@@ -1,0 +1,77 @@
+/*
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see http://www.gnu.org/licenses/
+ */
+package org.phenotips.configuration.internal;
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Provider;
+import javax.inject.Singleton;
+
+import org.phenotips.configuration.RecordConfigurationModule;
+import org.slf4j.Logger;
+import org.xwiki.component.annotation.Component;
+import org.xwiki.component.manager.ComponentLookupException;
+import org.xwiki.component.manager.ComponentManager;
+
+@Singleton
+@Component
+public class CustomConfigurationProvider implements Provider<List<RecordConfigurationModule>> {
+	
+    /** Logging helper. */
+    @Inject
+    private Logger logger;
+    
+    @Inject
+    @Named("wiki")
+    private ComponentManager cm;
+    
+    @Override
+    public List<RecordConfigurationModule> get()
+    {
+        try {
+    	    List<RecordConfigurationModule> modules = new LinkedList<>();
+    	    modules.addAll(this.cm.<RecordConfigurationModule>getInstanceList(RecordConfigurationModule.class));
+    	    Collections.sort(modules, ModulePriorityComparator.INSTANCE);
+    	    return modules;
+        } catch (ComponentLookupException ex) {
+    	    this.logger.warn("Failed to create the list: {}", ex.getMessage());
+        }
+        return Collections.emptyList();
+    }
+    
+    private static final class ModulePriorityComparator implements Comparator<RecordConfigurationModule>
+    {
+        private static final ModulePriorityComparator INSTANCE = new ModulePriorityComparator();
+    			
+	    @Override
+	    public int compare(RecordConfigurationModule o1, RecordConfigurationModule o2) {
+		    int result = o1.getPriority() - o2.getPriority();
+		    // If they happen to have the same priority, order alphabetically by their name
+		    if(result == 0) {
+			    result = o1.getClass().getSimpleName().compareToIgnoreCase(o2.getClass().getSimpleName());
+		    }
+		    return result;
+	    }
+    	
+    }
+}

@@ -21,14 +21,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.phenotips.Constants;
 import org.phenotips.configuration.RecordConfiguration;
 import org.phenotips.configuration.RecordConfigurationModule;
+import org.phenotips.configuration.RecordElement;
 import org.phenotips.configuration.RecordSection;
-import org.phenotips.configuration.internal.global.DefaultRecordSection;
 import org.slf4j.Logger;
 import org.xwiki.bridge.DocumentAccessBridge;
 import org.xwiki.model.EntityType;
 import org.xwiki.model.reference.DocumentReferenceResolver;
 import org.xwiki.model.reference.EntityReference;
-import org.xwiki.uiextension.UIExtension;
 import org.xwiki.uiextension.UIExtensionFilter;
 import org.xwiki.uiextension.UIExtensionManager;
 
@@ -73,6 +72,7 @@ public class StudyRecordConfigurationModule implements RecordConfigurationModule
     private DocumentReferenceResolver<EntityReference> resolver;
 
     /** Provides access to the current request context. */
+    @Inject
     protected Provider<XWikiContext> xcontextProvider;
 
     /** Lists the patient form sections and fields. */
@@ -96,26 +96,68 @@ public class StudyRecordConfigurationModule implements RecordConfigurationModule
     @Override
     public RecordConfiguration process(RecordConfiguration config)
 	{
-    	//this.configuration
     	CustomConfiguration configObj = getBoundConfiguration();
-        List<RecordSection> resultSections = new ArrayList<RecordSection>();
-        resultSections.addAll(config.getAllSections());
+        List<RecordSection> resultSections = new ArrayList<>();        
+        //List<RecordSection> sortSections = new ArrayList<>();
+        //config object
+
+        final List<String> elementOverrides = configObj.getFieldsOverride();
+        final List<String> sectionOverrides = configObj.getSectionsOverride();
         
-        final List<String> overrides = configObj.getSectionsOverride();
+       // resultSections.addAll(config.getAllSections());
+       
+        for (RecordSection section : config.getAllSections()) {
+        	if (sectionOverrides != null && !sectionOverrides.isEmpty() && !sectionOverrides.contains(section.getExtension().getId())) {
+                continue;
+            }
+            //Find if elements are enabled
+            List<RecordElement> updatedElements = new LinkedList<>();
+            for (RecordElement element : section.getAllElements()) {
+            	if (elementOverrides == null || elementOverrides.isEmpty() || elementOverrides.contains(element.getExtension().getId())) {
+                    updatedElements.add(element);
+                }         
+            }
+            Collections.<RecordElement>sort(updatedElements, new Comparator<RecordElement>()
+            {
+                @Override
+                public int compare(RecordElement o1, RecordElement o2)
+                {
+                    int i1 = elementOverrides.indexOf(o1.getExtension().getId());
+                    int i2 = elementOverrides.indexOf(o2.getExtension().getId());
+                    return (i2 == -1 || i1 == -1) ? (i2 - i1) : (i1 - i2);
+                }
+            });
+            // add list of elements to section
+            section.setElements(updatedElements);
+            resultSections.add(section);
+        }
         
-        if (overrides != null && !overrides.isEmpty()) {
+        // Sections order, add to configs if not -1
+        if (sectionOverrides != null && !sectionOverrides.isEmpty()) {
             Collections.<RecordSection>sort(resultSections, new Comparator<RecordSection>()
             {
                 @Override
                 public int compare(RecordSection o1, RecordSection o2)
                 {
-                    int i1 = overrides.indexOf(o1.getExtension().getId());
-                    int i2 = overrides.indexOf(o2.getExtension().getId());
+                    int i1 = sectionOverrides.indexOf(o1.getExtension().getId());
+                    int i2 = sectionOverrides.indexOf(o2.getExtension().getId());
                     return (i2 == -1 || i1 == -1) ? (i2 - i1) : (i1 - i2);
                 }
             });
         }
+        
+       
+        
+        /*for(RecordSection section : resultSections) {
+        	this.logger.warn("Section: {}", section.toString());
+        	for(RecordElement element : section.getAllElements()) {
+        		this.logger.warn("Section: {}", element.toString());
+        	}
+        }*/
+        
+        
         config.setSections(resultSections);
+      
         return config;
 	}
 
@@ -138,8 +180,7 @@ public class StudyRecordConfigurationModule implements RecordConfigurationModule
      * that configuration.
      *
      * @return a form configuration, if one is bound to the current document, or {@code null} otherwise
-     */
-   
+     */   
     private CustomConfiguration getBoundConfiguration()
     {
         if (this.dab.getCurrentDocumentReference() == null) {

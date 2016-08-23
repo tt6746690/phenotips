@@ -113,7 +113,11 @@ public class DefaultRecordSection implements RecordSection
     @Override
     public List<RecordElement> getEnabledElements()
     {
-        List<RecordElement> result = new LinkedList<RecordElement>();
+    	// FIX ME
+        if (this.elements != null) {
+        	return this.elements;
+        }
+    	List<RecordElement> result = new LinkedList<RecordElement>();
         for (RecordElement element : getAllElements()) {
             if (element.isEnabled()) {
                 result.add(element);

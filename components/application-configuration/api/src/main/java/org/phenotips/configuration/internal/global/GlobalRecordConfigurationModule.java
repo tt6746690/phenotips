@@ -30,9 +30,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Provider;
-
-import com.xpn.xwiki.XWikiContext;
 
 /**
  * Default (global) implementation of the {@link RecordConfiguration} role.
@@ -40,13 +37,11 @@ import com.xpn.xwiki.XWikiContext;
  * @version $Id$
  * @since 1.0M9
  */
+@Named("Default")
 public class GlobalRecordConfigurationModule implements RecordConfigurationModule
 {
     /** The name of the UIX parameter used for specifying the order of fields and sections. */
     private static final String SORT_PARAMETER_NAME = "order";
-
-    /** Provides access to the current request context. */
-    protected Provider<XWikiContext> xcontextProvider;
 
     /** Lists the patient form sections and fields. */
     @Inject
