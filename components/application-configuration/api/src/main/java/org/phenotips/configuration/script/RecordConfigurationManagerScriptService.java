@@ -49,6 +49,7 @@ public class RecordConfigurationManagerScriptService implements ScriptService
      *
      * @return a valid configuration, either the global one or one configured, for example in one of the user's groups
      */
+    @Deprecated
     public RecordConfiguration getActiveConfiguration()
     {
         return this.configuration.getActiveConfiguration();

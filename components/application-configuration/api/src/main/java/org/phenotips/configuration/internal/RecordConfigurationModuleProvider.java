@@ -35,7 +35,7 @@ import org.xwiki.component.manager.ComponentManager;
 
 @Singleton
 @Component
-public class CustomConfigurationProvider implements Provider<List<RecordConfigurationModule>> {
+public class RecordConfigurationModuleProvider implements Provider<List<RecordConfigurationModule>> {
 	
     /** Logging helper. */
     @Inject
@@ -45,6 +45,11 @@ public class CustomConfigurationProvider implements Provider<List<RecordConfigur
     @Named("wiki")
     private ComponentManager cm;
     
+    /**
+     * Creates a list of modules that implement {@link RecordConfigurationModule} and sort them by priority.
+     * 
+     * @return A list of sorted modules, or {@code emptyList()} otherwise
+     */
     @Override
     public List<RecordConfigurationModule> get()
     {
@@ -59,6 +64,11 @@ public class CustomConfigurationProvider implements Provider<List<RecordConfigur
         return Collections.emptyList();
     }
     
+    /**
+     * Compares the priority of the modules 
+     * 
+     * @return Ordered list of Modules
+     */
     private static final class ModulePriorityComparator implements Comparator<RecordConfigurationModule>
     {
         private static final ModulePriorityComparator INSTANCE = new ModulePriorityComparator();

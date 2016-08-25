@@ -45,7 +45,9 @@ import com.xpn.xwiki.XWikiContext;
  *
  * @version $Id$
  * @since 1.0M9
+ * @deprecated
  */
+@Deprecated
 public class ConfiguredRecordConfiguration extends GlobalRecordConfiguration implements RecordConfiguration
 {
     /** The custom configuration defining this patient record configuration. */

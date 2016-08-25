@@ -35,9 +35,8 @@ import javax.inject.Named;
  * Default (global) implementation of the {@link RecordConfiguration} role.
  *
  * @version $Id$
- * @since 1.0M9
+ * @since 1.3
  */
-@Named("Default")
 public class GlobalRecordConfigurationModule implements RecordConfigurationModule
 {
     /** The name of the UIX parameter used for specifying the order of fields and sections. */

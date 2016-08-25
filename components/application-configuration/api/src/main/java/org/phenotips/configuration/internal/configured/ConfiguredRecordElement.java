@@ -30,7 +30,9 @@ import java.util.List;
  *
  * @version $Id$
  * @since 1.0M9
+ * @deprecated
  */
+@Deprecated
 public class ConfiguredRecordElement extends DefaultRecordElement implements RecordElement
 {
     /** The custom configuration affecting this element. */

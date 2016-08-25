@@ -23,6 +23,7 @@ import org.phenotips.configuration.RecordConfiguration;
 import org.phenotips.configuration.RecordConfigurationModule;
 import org.phenotips.configuration.RecordElement;
 import org.phenotips.configuration.RecordSection;
+import org.phenotips.configuration.internal.DefaultRecordConfiguration;
 import org.slf4j.Logger;
 import org.xwiki.bridge.DocumentAccessBridge;
 import org.xwiki.model.EntityType;
@@ -50,7 +51,7 @@ import com.xpn.xwiki.doc.XWikiDocument;
  * configuration}.
  *
  * @version $Id$
- * @since 1.0M9
+ * @since 1.3
  */
 @Named("Study")
 public class StudyRecordConfigurationModule implements RecordConfigurationModule
@@ -97,20 +98,16 @@ public class StudyRecordConfigurationModule implements RecordConfigurationModule
     public RecordConfiguration process(RecordConfiguration config)
 	{
     	CustomConfiguration configObj = getBoundConfiguration();
-        List<RecordSection> resultSections = new ArrayList<>();        
-        //List<RecordSection> sortSections = new ArrayList<>();
-        //config object
-
+        List<RecordSection> resultSections = new ArrayList<>();  
+        RecordConfiguration updatedConfigs = new DefaultRecordConfiguration();
         final List<String> elementOverrides = configObj.getFieldsOverride();
         final List<String> sectionOverrides = configObj.getSectionsOverride();
         
-       // resultSections.addAll(config.getAllSections());
-       
         for (RecordSection section : config.getAllSections()) {
         	if (sectionOverrides != null && !sectionOverrides.isEmpty() && !sectionOverrides.contains(section.getExtension().getId())) {
                 continue;
             }
-            //Find if elements are enabled
+            // Find if elements are enabled
             List<RecordElement> updatedElements = new LinkedList<>();
             for (RecordElement element : section.getAllElements()) {
             	if (elementOverrides == null || elementOverrides.isEmpty() || elementOverrides.contains(element.getExtension().getId())) {
@@ -127,12 +124,12 @@ public class StudyRecordConfigurationModule implements RecordConfigurationModule
                     return (i2 == -1 || i1 == -1) ? (i2 - i1) : (i1 - i2);
                 }
             });
-            // add list of elements to section
+            // Add list of sorted elements to section
             section.setElements(updatedElements);
             resultSections.add(section);
         }
         
-        // Sections order, add to configs if not -1
+        // Sort the list of sections
         if (sectionOverrides != null && !sectionOverrides.isEmpty()) {
             Collections.<RecordSection>sort(resultSections, new Comparator<RecordSection>()
             {
@@ -145,20 +142,9 @@ public class StudyRecordConfigurationModule implements RecordConfigurationModule
                 }
             });
         }
-        
-       
-        
-        /*for(RecordSection section : resultSections) {
-        	this.logger.warn("Section: {}", section.toString());
-        	for(RecordElement element : section.getAllElements()) {
-        		this.logger.warn("Section: {}", element.toString());
-        	}
-        }*/
-        
-        
-        config.setSections(resultSections);
+        updatedConfigs.setSections(resultSections);
       
-        return config;
+        return updatedConfigs;
 	}
 
     @Override

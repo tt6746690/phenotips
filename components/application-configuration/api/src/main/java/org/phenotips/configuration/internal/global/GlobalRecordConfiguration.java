@@ -55,6 +55,7 @@ import com.xpn.xwiki.objects.classes.BaseClass;
  * @since 1.0M9
  * @deprecated
  */
+@Deprecated
 public class GlobalRecordConfiguration implements RecordConfiguration
 {
     /** The location where preferences are stored. */

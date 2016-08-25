@@ -29,7 +29,6 @@ import org.phenotips.configuration.RecordConfigurationModule;
 import org.phenotips.configuration.RecordElement;
 import org.phenotips.configuration.RecordSection;
 import org.phenotips.configuration.internal.DefaultRecordConfiguration;
-import org.phenotips.configuration.internal.configured.CustomConfiguration;
 import org.phenotips.data.Patient;
 import org.phenotips.data.PatientRepository;
 import org.xwiki.bridge.DocumentAccessBridge;
@@ -83,7 +82,7 @@ public class ConsentsRecordConfigurationModule extends DefaultConsentAuthorizer 
     	    
 	    for (RecordSection section : config.getAllSections()) {
 		    // Filters elements by consents
-		    elementList = filterForm(section.getAllElements(), patient);
+		    elementList = filterForm(section.getEnabledElements(), patient);
             if (section.isEnabled()) {
 		        section.setElements(elementList);
 		        sectionList.add(section);

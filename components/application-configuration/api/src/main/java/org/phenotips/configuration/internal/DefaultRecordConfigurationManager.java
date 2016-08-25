@@ -46,7 +46,12 @@ public class DefaultRecordConfigurationManager implements RecordConfigurationMan
     
     @Inject
     private Provider<List<RecordConfigurationModule>> modules;
-
+    
+    /**
+     * Configures the patient record form in order of priority
+     *
+     * @return a form configuration
+     */
     public RecordConfiguration getConfiguration(String recordType)
     {
         RecordConfiguration config = null;
@@ -60,11 +65,10 @@ public class DefaultRecordConfigurationManager implements RecordConfigurationMan
         return config;
     }
 
-    //@Deprecated
+    @Deprecated
     @Override
     public RecordConfiguration getActiveConfiguration()
     {
     	return getConfiguration("");
     }
-
 }
