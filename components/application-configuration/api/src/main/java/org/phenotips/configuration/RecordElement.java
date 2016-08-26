@@ -53,7 +53,7 @@ public interface RecordElement
     boolean isEnabled();
 
     /**
-     * Whether this element contains any private indentifiable information (PII) about the patient or not.
+     * Whether this element contains any private identifiable information (PII) about the patient or not.
      *
      * @return {@code true} if this element contains PII, {@code false} otherwise
      */

@@ -35,16 +35,17 @@ import org.xwiki.component.manager.ComponentManager;
 
 @Singleton
 @Component
-public class RecordConfigurationModuleProvider implements Provider<List<RecordConfigurationModule>> {
-	
+public class RecordConfigurationModuleProvider implements Provider<List<RecordConfigurationModule>>
+{
+
     /** Logging helper. */
     @Inject
     private Logger logger;
-    
+
     @Inject
     @Named("wiki")
     private ComponentManager cm;
-    
+
     /**
      * Creates a list of modules that implement {@link RecordConfigurationModule} and sort them by priority.
      * 
@@ -54,34 +55,34 @@ public class RecordConfigurationModuleProvider implements Provider<List<RecordCo
     public List<RecordConfigurationModule> get()
     {
         try {
-    	    List<RecordConfigurationModule> modules = new LinkedList<>();
-    	    modules.addAll(this.cm.<RecordConfigurationModule>getInstanceList(RecordConfigurationModule.class));
-    	    Collections.sort(modules, ModulePriorityComparator.INSTANCE);
-    	    return modules;
+            List<RecordConfigurationModule> modules = new LinkedList<>();
+            modules.addAll(this.cm.<RecordConfigurationModule> getInstanceList(RecordConfigurationModule.class));
+            Collections.sort(modules, ModulePriorityComparator.INSTANCE);
+            return modules;
         } catch (ComponentLookupException ex) {
-    	    this.logger.warn("Failed to create the list: {}", ex.getMessage());
+            this.logger.warn("Failed to create the list: {}", ex.getMessage());
         }
         return Collections.emptyList();
     }
-    
+
     /**
-     * Compares the priority of the modules 
+     * Compares the priority of the modules
      * 
      * @return Ordered list of Modules
      */
     private static final class ModulePriorityComparator implements Comparator<RecordConfigurationModule>
     {
         private static final ModulePriorityComparator INSTANCE = new ModulePriorityComparator();
-    			
-	    @Override
-	    public int compare(RecordConfigurationModule o1, RecordConfigurationModule o2) {
-		    int result = o1.getPriority() - o2.getPriority();
-		    // If they happen to have the same priority, order alphabetically by their name
-		    if(result == 0) {
-			    result = o1.getClass().getSimpleName().compareToIgnoreCase(o2.getClass().getSimpleName());
-		    }
-		    return result;
-	    }
-    	
+
+        @Override
+        public int compare(RecordConfigurationModule o1, RecordConfigurationModule o2)
+        {
+            int result = o1.getPriority() - o2.getPriority();
+            // If they happen to have the same priority, order alphabetically by their name
+            if (result == 0) {
+                result = o1.getClass().getSimpleName().compareToIgnoreCase(o2.getClass().getSimpleName());
+            }
+            return result;
+        }
     }
 }

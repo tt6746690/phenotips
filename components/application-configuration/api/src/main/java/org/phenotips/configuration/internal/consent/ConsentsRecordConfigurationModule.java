@@ -38,21 +38,20 @@ import org.xwiki.uiextension.UIExtensionManager;
 import com.xpn.xwiki.XWikiContext;
 
 /**
- * Implementation of {@link RecordConfiguration} that takes into account a {@link DefaultConsentAuthorizer custom
- * configuration}.
+ * Implementation of {@link RecordConfiguration} that takes into account a {@link DefaultConsentAuthorizer custom configuration}.
  *
  * @version $Id$
  * @since 1.3
  */
 @Named("Consents")
-public class ConsentsRecordConfigurationModule extends DefaultConsentAuthorizer implements RecordConfigurationModule 
+public class ConsentsRecordConfigurationModule extends DefaultConsentAuthorizer implements RecordConfigurationModule
 {
-	@Inject
-	private PatientRepository patients;
-	
-	@Inject
-	private DocumentAccessBridge dab;
-	
+    @Inject
+    private PatientRepository patients;
+
+    @Inject
+    private DocumentAccessBridge dab;
+
     /** Provides access to the current request context. */
     protected Provider<XWikiContext> xcontextProvider;
 
@@ -66,44 +65,44 @@ public class ConsentsRecordConfigurationModule extends DefaultConsentAuthorizer 
     protected UIExtensionFilter orderFilter;
 
     @Override
-    public RecordConfiguration process(RecordConfiguration config) 
+    public RecordConfiguration process(RecordConfiguration config)
     {
-    	Patient patient = this.patients.getPatientById(dab.getCurrentDocumentReference().toString());
-    	if (patient == null) {
-    		return config;
-    	}
+        Patient patient = this.patients.getPatientById(dab.getCurrentDocumentReference().toString());
+        if (patient == null) {
+            return config;
+        }
         RecordConfiguration updatedConfigs = new DefaultRecordConfiguration();
         List<RecordElement> elementList = new LinkedList<>();
-        List<RecordSection> sectionList = new LinkedList<>();  	
-        
+        List<RecordSection> sectionList = new LinkedList<>();
+
         if (config == null) {
-        	return config;
+            return config;
         }
-    	    
-	    for (RecordSection section : config.getAllSections()) {
-		    // Filters elements by consents
-		    elementList = filterForm(section.getEnabledElements(), patient);
+
+        for (RecordSection section : config.getAllSections()) {
+            // Filters elements by consents
+            elementList = filterForm(section.getEnabledElements(), patient);
             if (section.isEnabled()) {
-		        section.setElements(elementList);
-		        sectionList.add(section);
-		    }
+                section.setElements(elementList);
+                sectionList.add(section);
+            }
         }
         updatedConfigs.setSections(sectionList);
-		
+
         return updatedConfigs;
     }
 
     @Override
-    public int getPriority() 
+    public int getPriority()
     {
-	    return 300;
+        return 300;
     }
 
     @Override
     public String[] getSupportedRecordTypes()
     {
-        String[] recType = {"patient"};
-	    return recType;
-	}
+        String[] recType = { "patient" };
+        return recType;
+    }
 
 }

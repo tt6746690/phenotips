@@ -20,23 +20,24 @@ package org.phenotips.configuration;
 import org.xwiki.component.annotation.Role;
 import org.xwiki.stability.Unstable;
 
-//@Unstable
+@Unstable
 @Role
 public interface RecordConfigurationModule {
-	
-	/**
-	 * Configures how the patient record appears.
-	 * 
-	 * @param documents the previous configuration
-	 * @return {@link RecordConfiguration} Patient record is configured to the user's preference
-	 */
+
+    /**
+     * Configures how the patient record appears.
+     * 
+     * @param documents the previous configuration
+     * @return {@link RecordConfiguration} Patient record is configured to the
+     *         user's preference
+     */
     RecordConfiguration process(RecordConfiguration config);
-    
+
     /**
      * @return a positive number
      */
     int getPriority();
-    
+
     /**
      * @return the record type.
      */

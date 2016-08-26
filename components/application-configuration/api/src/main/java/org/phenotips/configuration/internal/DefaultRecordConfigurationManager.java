@@ -43,10 +43,10 @@ public class DefaultRecordConfigurationManager implements RecordConfigurationMan
     /** Logging helper. */
     @Inject
     private Logger logger;
-    
+
     @Inject
     private Provider<List<RecordConfigurationModule>> modules;
-    
+
     /**
      * Configures the patient record form in order of priority
      *
@@ -55,13 +55,13 @@ public class DefaultRecordConfigurationManager implements RecordConfigurationMan
     public RecordConfiguration getConfiguration(String recordType)
     {
         RecordConfiguration config = null;
-        for (RecordConfigurationModule service: modules.get()) {
-    	    try {
-    		    config = service.process(config);
-    	    } catch (Exception ex) {
-    		    this.logger.warn("Failed to read the record configuration: {}", ex.getMessage());
-    		}    		
-    	}
+        for (RecordConfigurationModule service : modules.get()) {
+            try {
+                config = service.process(config);
+            } catch (Exception ex) {
+                this.logger.warn("Failed to read the record configuration: {}", ex.getMessage());
+            }
+        }
         return config;
     }
 
@@ -69,6 +69,6 @@ public class DefaultRecordConfigurationManager implements RecordConfigurationMan
     @Override
     public RecordConfiguration getActiveConfiguration()
     {
-    	return getConfiguration("");
+        return getConfiguration("");
     }
 }

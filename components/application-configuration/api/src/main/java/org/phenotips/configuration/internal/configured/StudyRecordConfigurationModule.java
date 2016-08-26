@@ -42,27 +42,25 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Provider;
 
-
 import com.xpn.xwiki.XWikiContext;
 import com.xpn.xwiki.doc.XWikiDocument;
 
 /**
- * Implementation of {@link RecordConfiguration} that takes into account a {@link CustomConfiguration custom
- * configuration}.
+ * Implementation of {@link RecordConfiguration} that takes into account a
+ * {@link CustomConfiguration custom configuration}.
  *
  * @version $Id$
  * @since 1.3
  */
 @Named("Study")
 public class StudyRecordConfigurationModule implements RecordConfigurationModule
-{   
-    /** Reference to the xclass which allows to bind a specific form customization to a patient record. */
+{
+    /**
+     * Reference to the xclass which allows to bind a specific form customization to a patient record.
+     */
     public static final EntityReference STUDY_BINDING_CLASS_REFERENCE = new EntityReference("StudyBindingClass",
-        EntityType.DOCUMENT, Constants.CODE_SPACE_REFERENCE);
-	
-    /** The custom configuration defining this patient record configuration. */
-    protected ConfiguredRecordConfiguration configuration;
-    
+            EntityType.DOCUMENT, Constants.CODE_SPACE_REFERENCE);
+
     /** Provides access to the data. */
     @Inject
     private DocumentAccessBridge dab;
@@ -84,38 +82,39 @@ public class StudyRecordConfigurationModule implements RecordConfigurationModule
     @Inject
     @Named("sortByParameter")
     protected UIExtensionFilter orderFilter;
-    
+
     /** Parses serialized document references into proper references. */
     @Inject
     @Named("current")
     private DocumentReferenceResolver<String> referenceParser;
-    
+
     /** Logging helper. */
     @Inject
     private Logger logger;
 
     @Override
     public RecordConfiguration process(RecordConfiguration config)
-	{
-    	CustomConfiguration configObj = getBoundConfiguration();
-        List<RecordSection> resultSections = new ArrayList<>();  
+    {
+        CustomConfiguration configObj = getBoundConfiguration();
+        List<RecordSection> resultSections = new ArrayList<>();
         RecordConfiguration updatedConfigs = new DefaultRecordConfiguration();
         final List<String> elementOverrides = configObj.getFieldsOverride();
         final List<String> sectionOverrides = configObj.getSectionsOverride();
-        
+
         for (RecordSection section : config.getAllSections()) {
-        	if (sectionOverrides != null && !sectionOverrides.isEmpty() && !sectionOverrides.contains(section.getExtension().getId())) {
+            if (sectionOverrides != null && !sectionOverrides.isEmpty()
+                    && !sectionOverrides.contains(section.getExtension().getId())) {
                 continue;
             }
             // Find if elements are enabled
             List<RecordElement> updatedElements = new LinkedList<>();
             for (RecordElement element : section.getAllElements()) {
-            	if (elementOverrides == null || elementOverrides.isEmpty() || elementOverrides.contains(element.getExtension().getId())) {
+                if (elementOverrides == null || elementOverrides.isEmpty()
+                        || elementOverrides.contains(element.getExtension().getId())) {
                     updatedElements.add(element);
-                }         
+                }
             }
-            Collections.<RecordElement>sort(updatedElements, new Comparator<RecordElement>()
-            {
+            Collections.<RecordElement> sort(updatedElements, new Comparator<RecordElement>() {
                 @Override
                 public int compare(RecordElement o1, RecordElement o2)
                 {
@@ -128,11 +127,10 @@ public class StudyRecordConfigurationModule implements RecordConfigurationModule
             section.setElements(updatedElements);
             resultSections.add(section);
         }
-        
+
         // Sort the list of sections
         if (sectionOverrides != null && !sectionOverrides.isEmpty()) {
-            Collections.<RecordSection>sort(resultSections, new Comparator<RecordSection>()
-            {
+            Collections.<RecordSection> sort(resultSections, new Comparator<RecordSection>() {
                 @Override
                 public int compare(RecordSection o1, RecordSection o2)
                 {
@@ -143,51 +141,52 @@ public class StudyRecordConfigurationModule implements RecordConfigurationModule
             });
         }
         updatedConfigs.setSections(resultSections);
-      
+
         return updatedConfigs;
-	}
+    }
 
     @Override
     public int getPriority()
-	{
-	    return 100;
-	}
+    {
+        return 100;
+    }
 
     @Override
     public String[] getSupportedRecordTypes()
-	{
-        String[] recType = {"patient"};
-	    
-	    return recType;
-	}
+    {
+        String[] recType = { "patient" };
+
+        return recType;
+    }
 
     /**
-     * If the current document is a patient record, and it has a valid specific study binding specified, then return
-     * that configuration.
+     * If the current document is a patient record, and it has a valid specific
+     * study binding specified, then return that configuration.
      *
-     * @return a form configuration, if one is bound to the current document, or {@code null} otherwise
-     */   
+     * @return a form configuration, if one is bound to the current document, or
+     *         {@code null} otherwise
+     */
     private CustomConfiguration getBoundConfiguration()
     {
         if (this.dab.getCurrentDocumentReference() == null) {
             // Non-interactive requests, use the default configuration
             return null;
         }
-        String boundConfig =
-            (String) this.dab.getProperty(this.dab.getCurrentDocumentReference(),
+        String boundConfig = (String) this.dab.getProperty(this.dab.getCurrentDocumentReference(),
                 this.resolver.resolve(STUDY_BINDING_CLASS_REFERENCE), "studyReference");
         if (StringUtils.isNotBlank(boundConfig)) {
             try {
                 XWikiContext context = this.xcontextProvider.get();
                 XWikiDocument doc = context.getWiki().getDocument(this.referenceParser.resolve(boundConfig), context);
                 if (doc == null || doc.isNew()) {
-                    // Inaccessible or deleted document, use default configuration
+                    // Inaccessible or deleted document, use default
+                    // configuration
                     return null;
                 }
                 return new CustomConfiguration(doc.getXObject(RecordConfiguration.CUSTOM_PREFERENCES_CLASS));
             } catch (Exception ex) {
                 this.logger.warn("Failed to read the bound configuration [{}] for [{}]: {}", boundConfig,
-                    this.dab.getCurrentDocumentReference(), ex.getMessage());
+                        this.dab.getCurrentDocumentReference(), ex.getMessage());
             }
         }
         return null;
