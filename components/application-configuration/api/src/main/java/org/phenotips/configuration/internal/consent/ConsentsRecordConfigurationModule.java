@@ -17,13 +17,6 @@
  */
 package org.phenotips.configuration.internal.consent;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Provider;
-
 import org.phenotips.configuration.RecordConfiguration;
 import org.phenotips.configuration.RecordConfigurationModule;
 import org.phenotips.configuration.RecordElement;
@@ -31,14 +24,23 @@ import org.phenotips.configuration.RecordSection;
 import org.phenotips.configuration.internal.DefaultRecordConfiguration;
 import org.phenotips.data.Patient;
 import org.phenotips.data.PatientRepository;
+
 import org.xwiki.bridge.DocumentAccessBridge;
 import org.xwiki.uiextension.UIExtensionFilter;
 import org.xwiki.uiextension.UIExtensionManager;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Provider;
+
 import com.xpn.xwiki.XWikiContext;
 
 /**
- * Implementation of {@link RecordConfiguration} that takes into account a {@link DefaultConsentAuthorizer custom configuration}.
+ * Implementation of {@link RecordConfiguration} that takes into account a {@link DefaultConsentAuthorizer custom
+ * configuration}.
  *
  * @version $Id$
  * @since 1.3
@@ -67,7 +69,7 @@ public class ConsentsRecordConfigurationModule extends DefaultConsentAuthorizer 
     @Override
     public RecordConfiguration process(RecordConfiguration config)
     {
-        Patient patient = this.patients.getPatientById(dab.getCurrentDocumentReference().toString());
+        Patient patient = this.patients.getPatientById(this.dab.getCurrentDocumentReference().toString());
         if (patient == null) {
             return config;
         }

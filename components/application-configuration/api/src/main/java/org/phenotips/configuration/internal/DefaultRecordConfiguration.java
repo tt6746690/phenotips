@@ -52,7 +52,7 @@ public class DefaultRecordConfiguration implements RecordConfiguration
 {
     /** The location where preferences are stored. */
     private static final EntityReference PREFERENCES_LOCATION = new EntityReference("WebHome", EntityType.DOCUMENT,
-            new EntityReference("data", EntityType.SPACE));
+        new EntityReference("data", EntityType.SPACE));
 
     /** Provides access to the current request context. */
     protected Provider<XWikiContext> xcontextProvider;
@@ -66,9 +66,10 @@ public class DefaultRecordConfiguration implements RecordConfiguration
     @Override
     public List<RecordSection> getAllSections()
     {
-        return Collections.unmodifiableList(sections);
+        return Collections.unmodifiableList(this.sections);
     }
 
+    @Override
     public void setSections(List<RecordSection> sections)
     {
         this.sections = sections;
@@ -77,7 +78,7 @@ public class DefaultRecordConfiguration implements RecordConfiguration
     @Override
     public List<RecordSection> getEnabledSections()
     {
-        List<RecordSection> result = new LinkedList<RecordSection>();
+        List<RecordSection> result = new LinkedList<>();
         for (RecordSection section : getAllSections()) {
             if (section.isEnabled()) {
                 result.add(section);
@@ -89,7 +90,7 @@ public class DefaultRecordConfiguration implements RecordConfiguration
     @Override
     public List<String> getEnabledFieldNames()
     {
-        List<String> result = new LinkedList<String>();
+        List<String> result = new LinkedList<>();
         for (RecordSection section : getEnabledSections()) {
             for (RecordElement element : section.getEnabledElements()) {
                 result.addAll(element.getDisplayedFields());
@@ -101,7 +102,7 @@ public class DefaultRecordConfiguration implements RecordConfiguration
     @Override
     public List<String> getEnabledNonIdentifiableFieldNames()
     {
-        List<String> result = new LinkedList<String>();
+        List<String> result = new LinkedList<>();
         for (RecordSection section : getEnabledSections()) {
             for (RecordElement element : section.getEnabledElements()) {
                 if (!element.containsPrivateIdentifiableInformation()) {
@@ -120,7 +121,7 @@ public class DefaultRecordConfiguration implements RecordConfiguration
             BaseObject settings = getGlobalConfigurationObject();
             mapping = StringUtils.defaultIfBlank(settings.getStringValue("phenotypeMapping"), mapping);
             DocumentReferenceResolver<String> resolver = ComponentManagerRegistry.getContextComponentManager()
-                    .getInstance(DocumentReferenceResolver.TYPE_STRING, "current");
+                .getInstance(DocumentReferenceResolver.TYPE_STRING, "current");
             return resolver.resolve(mapping);
         } catch (NullPointerException ex) {
             // No value set, return the default

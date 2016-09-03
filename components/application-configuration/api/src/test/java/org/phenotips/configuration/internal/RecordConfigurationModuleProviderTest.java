@@ -1,31 +1,34 @@
 package org.phenotips.configuration.internal;
 
+import org.phenotips.configuration.RecordConfiguration;
+import org.phenotips.configuration.RecordConfigurationModule;
+
+import org.xwiki.component.manager.ComponentLookupException;
+import org.xwiki.component.manager.ComponentManager;
+import org.xwiki.test.mockito.MockitoComponentMockingRule;
+
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.inject.Provider;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.Assert;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.phenotips.configuration.RecordConfiguration;
-import org.phenotips.configuration.RecordConfigurationModule;
-import org.xwiki.component.manager.ComponentLookupException;
-import org.xwiki.component.manager.ComponentManager;
-import org.xwiki.test.mockito.MockitoComponentMockingRule;
 
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 
 public class RecordConfigurationModuleProviderTest
 {
     @Rule
-    public MockitoComponentMockingRule<Provider<List<RecordConfigurationModule>>> mocker = new MockitoComponentMockingRule<Provider<List<RecordConfigurationModule>>>(
+    public MockitoComponentMockingRule<Provider<List<RecordConfigurationModule>>> mocker =
+        new MockitoComponentMockingRule<Provider<List<RecordConfigurationModule>>>(
             RecordConfigurationModuleProvider.class);
 
     @Mock
@@ -63,7 +66,7 @@ public class RecordConfigurationModuleProviderTest
         this.moduleList.add(this.highPriorityModule);
 
         List<RecordConfigurationModule> expectedList = Arrays.asList(this.lowPriorityModule, this.mediumPriorityModule,
-                this.highPriorityModule);
+            this.highPriorityModule);
         List<RecordConfigurationModule> actualList = this.mocker.getComponentUnderTest().get();
 
         Assert.assertEquals(expectedList, actualList);

@@ -20,6 +20,7 @@ package org.phenotips.configuration.internal.consent;
 import org.phenotips.configuration.RecordElement;
 import org.phenotips.data.Consent;
 import org.phenotips.data.ConsentManager;
+import org.phenotips.data.ConsentStatus;
 import org.phenotips.data.Patient;
 
 import org.xwiki.component.annotation.Component;
@@ -46,9 +47,10 @@ public class DefaultConsentAuthorizer implements ConsentAuthorizer
     @Inject
     private ConsentManager consentManager;
 
-    @Override public boolean consentsGloballyEnabled()
+    @Override
+    public boolean consentsGloballyEnabled()
     {
-        return !consentManager.getSystemConsents().isEmpty();
+        return !this.consentManager.getSystemConsents().isEmpty();
     }
 
     @Override
@@ -91,7 +93,7 @@ public class DefaultConsentAuthorizer implements ConsentAuthorizer
         if (systemConsents == null) {
             return true;
         }
-        Set<Consent> missingConsents = new HashSet<Consent>();
+        Set<Consent> missingConsents = new HashSet<>();
         for (Consent consent : systemConsents) {
             if (grantedConsents == null || !grantedConsents.contains(consent.getId())) {
                 missingConsents.add(consent);
@@ -132,20 +134,19 @@ public class DefaultConsentAuthorizer implements ConsentAuthorizer
     }
 
     /**
-     * Returns the union of all fields which the provided set of missing consents prevents from
-     * being used. Returns an empty list if all fields are affected (not consented).
-     * Returns null if no fields are affected.
+     * Returns the union of all fields which the provided set of missing consents prevents from being used. Returns an
+     * empty list if all fields are affected (not consented). Returns null if no fields are affected.
      *
      * @param missingConsents a set of presumably not granted consents
      */
     private Set<String> getNonConsentedFieldSet(Set<Consent> missingConsents)
     {
-        Set<String> notConsentedFields = new HashSet<String>();
+        Set<String> notConsentedFields = new HashSet<>();
         for (Consent consent : missingConsents) {
             if (consent.affectsAllFields()) {
                 // if at least one of the consents affects all fields no point to examine other consents
                 // since all fields are affected anyway
-                return new HashSet<String>();
+                return new HashSet<>();
             }
             if (!consent.affectsSomeFields()) {
                 continue;

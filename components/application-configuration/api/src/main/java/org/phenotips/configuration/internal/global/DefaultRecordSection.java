@@ -46,11 +46,11 @@ public class DefaultRecordSection implements RecordSection
 
     /** Sorts fields by their declared order. */
     protected final UIExtensionFilter orderFilter;
-    
+
     protected boolean enabled;
-    
+
     protected boolean expanded;
-    
+
     protected List<RecordElement> elements;
 
     /**
@@ -95,13 +95,13 @@ public class DefaultRecordSection implements RecordSection
     @Override
     public boolean isExpandedByDefault()
     {
-        return StringUtils.equals("true", extension.getParameters().get("expanded_by_default"));
+        return StringUtils.equals("true", this.extension.getParameters().get("expanded_by_default"));
     }
 
     @Override
     public List<RecordElement> getAllElements()
     {
-        List<RecordElement> result = new LinkedList<RecordElement>();
+        List<RecordElement> result = new LinkedList<>();
         List<UIExtension> fields = this.uixManager.get(this.extension.getId());
         fields = this.orderFilter.filter(fields, "order");
         for (UIExtension field : fields) {
@@ -113,11 +113,11 @@ public class DefaultRecordSection implements RecordSection
     @Override
     public List<RecordElement> getEnabledElements()
     {
-    	// FIX ME
+        // FIX ME
         if (this.elements != null) {
-        	return this.elements;
+            return this.elements;
         }
-    	List<RecordElement> result = new LinkedList<RecordElement>();
+        List<RecordElement> result = new LinkedList<>();
         for (RecordElement element : getAllElements()) {
             if (element.isEnabled()) {
                 result.add(element);
@@ -135,23 +135,23 @@ public class DefaultRecordSection implements RecordSection
         result.append(']');
         return result.toString();
     }
-    
+
     @Override
     public void setEnabled(boolean enabled)
     {
-    	this.enabled = enabled;
+        this.enabled = enabled;
     }
-    
+
     @Override
     public void setExpandedByDefault(boolean expanded)
     {
         this.expanded = expanded;
     }
-    
+
     @Override
     public void setElements(List<RecordElement> elements)
     {
-    	this.elements = elements;
+        this.elements = elements;
     }
 
     /**

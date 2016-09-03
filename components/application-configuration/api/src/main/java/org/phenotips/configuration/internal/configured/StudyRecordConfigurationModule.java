@@ -17,14 +17,13 @@
  */
 package org.phenotips.configuration.internal.configured;
 
-import org.apache.commons.lang3.StringUtils;
 import org.phenotips.Constants;
 import org.phenotips.configuration.RecordConfiguration;
 import org.phenotips.configuration.RecordConfigurationModule;
 import org.phenotips.configuration.RecordElement;
 import org.phenotips.configuration.RecordSection;
 import org.phenotips.configuration.internal.DefaultRecordConfiguration;
-import org.slf4j.Logger;
+
 import org.xwiki.bridge.DocumentAccessBridge;
 import org.xwiki.model.EntityType;
 import org.xwiki.model.reference.DocumentReferenceResolver;
@@ -42,12 +41,15 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Provider;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+
 import com.xpn.xwiki.XWikiContext;
 import com.xpn.xwiki.doc.XWikiDocument;
 
 /**
- * Implementation of {@link RecordConfiguration} that takes into account a
- * {@link CustomConfiguration custom configuration}.
+ * Implementation of {@link RecordConfiguration} that takes into account a {@link CustomConfiguration custom
+ * configuration}.
  *
  * @version $Id$
  * @since 1.3
@@ -59,7 +61,7 @@ public class StudyRecordConfigurationModule implements RecordConfigurationModule
      * Reference to the xclass which allows to bind a specific form customization to a patient record.
      */
     public static final EntityReference STUDY_BINDING_CLASS_REFERENCE = new EntityReference("StudyBindingClass",
-            EntityType.DOCUMENT, Constants.CODE_SPACE_REFERENCE);
+        EntityType.DOCUMENT, Constants.CODE_SPACE_REFERENCE);
 
     /** Provides access to the data. */
     @Inject
@@ -103,18 +105,19 @@ public class StudyRecordConfigurationModule implements RecordConfigurationModule
 
         for (RecordSection section : config.getAllSections()) {
             if (sectionOverrides != null && !sectionOverrides.isEmpty()
-                    && !sectionOverrides.contains(section.getExtension().getId())) {
+                && !sectionOverrides.contains(section.getExtension().getId())) {
                 continue;
             }
             // Find if elements are enabled
             List<RecordElement> updatedElements = new LinkedList<>();
             for (RecordElement element : section.getAllElements()) {
                 if (elementOverrides == null || elementOverrides.isEmpty()
-                        || elementOverrides.contains(element.getExtension().getId())) {
+                    || elementOverrides.contains(element.getExtension().getId())) {
                     updatedElements.add(element);
                 }
             }
-            Collections.<RecordElement> sort(updatedElements, new Comparator<RecordElement>() {
+            Collections.<RecordElement>sort(updatedElements, new Comparator<RecordElement>()
+            {
                 @Override
                 public int compare(RecordElement o1, RecordElement o2)
                 {
@@ -130,7 +133,8 @@ public class StudyRecordConfigurationModule implements RecordConfigurationModule
 
         // Sort the list of sections
         if (sectionOverrides != null && !sectionOverrides.isEmpty()) {
-            Collections.<RecordSection> sort(resultSections, new Comparator<RecordSection>() {
+            Collections.<RecordSection>sort(resultSections, new Comparator<RecordSection>()
+            {
                 @Override
                 public int compare(RecordSection o1, RecordSection o2)
                 {
@@ -160,11 +164,10 @@ public class StudyRecordConfigurationModule implements RecordConfigurationModule
     }
 
     /**
-     * If the current document is a patient record, and it has a valid specific
-     * study binding specified, then return that configuration.
+     * If the current document is a patient record, and it has a valid specific study binding specified, then return
+     * that configuration.
      *
-     * @return a form configuration, if one is bound to the current document, or
-     *         {@code null} otherwise
+     * @return a form configuration, if one is bound to the current document, or {@code null} otherwise
      */
     private CustomConfiguration getBoundConfiguration()
     {
@@ -173,7 +176,7 @@ public class StudyRecordConfigurationModule implements RecordConfigurationModule
             return null;
         }
         String boundConfig = (String) this.dab.getProperty(this.dab.getCurrentDocumentReference(),
-                this.resolver.resolve(STUDY_BINDING_CLASS_REFERENCE), "studyReference");
+            this.resolver.resolve(STUDY_BINDING_CLASS_REFERENCE), "studyReference");
         if (StringUtils.isNotBlank(boundConfig)) {
             try {
                 XWikiContext context = this.xcontextProvider.get();
@@ -186,7 +189,7 @@ public class StudyRecordConfigurationModule implements RecordConfigurationModule
                 return new CustomConfiguration(doc.getXObject(RecordConfiguration.CUSTOM_PREFERENCES_CLASS));
             } catch (Exception ex) {
                 this.logger.warn("Failed to read the bound configuration [{}] for [{}]: {}", boundConfig,
-                        this.dab.getCurrentDocumentReference(), ex.getMessage());
+                    this.dab.getCurrentDocumentReference(), ex.getMessage());
             }
         }
         return null;

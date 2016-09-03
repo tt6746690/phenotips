@@ -20,6 +20,7 @@ package org.phenotips.configuration.internal;
 import org.phenotips.configuration.RecordConfiguration;
 import org.phenotips.configuration.RecordConfigurationManager;
 import org.phenotips.configuration.RecordConfigurationModule;
+
 import org.xwiki.component.annotation.Component;
 
 import java.util.List;
@@ -52,10 +53,11 @@ public class DefaultRecordConfigurationManager implements RecordConfigurationMan
      *
      * @return a form configuration
      */
+    @Override
     public RecordConfiguration getConfiguration(String recordType)
     {
         RecordConfiguration config = null;
-        for (RecordConfigurationModule service : modules.get()) {
+        for (RecordConfigurationModule service : this.modules.get()) {
             try {
                 config = service.process(config);
             } catch (Exception ex) {

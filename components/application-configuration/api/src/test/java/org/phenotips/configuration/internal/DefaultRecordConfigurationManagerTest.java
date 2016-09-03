@@ -20,6 +20,8 @@ package org.phenotips.configuration.internal;
 import org.phenotips.configuration.RecordConfiguration;
 import org.phenotips.configuration.RecordConfigurationManager;
 import org.phenotips.configuration.RecordConfigurationModule;
+import org.phenotips.configuration.internal.global.GlobalRecordConfiguration;
+
 import org.xwiki.component.manager.ComponentLookupException;
 import org.xwiki.component.util.ReflectionUtils;
 import org.xwiki.test.mockito.MockitoComponentMockingRule;
@@ -44,20 +46,20 @@ import org.mockito.MockitoAnnotations;
 import com.xpn.xwiki.XWiki;
 import com.xpn.xwiki.XWikiContext;
 
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.when;
 
 /**
- * Tests for the default {@link RecordConfigurationManager} implementation,
- * {@link GlobalRecordConfiguration}.
+ * Tests for the default {@link RecordConfigurationManager} implementation, {@link GlobalRecordConfiguration}.
  *
  * @version $Id$
  */
 public class DefaultRecordConfigurationManagerTest
 {
     @Rule
-    public final MockitoComponentMockingRule<RecordConfigurationManager> mocker = new MockitoComponentMockingRule<RecordConfigurationManager>(
+    public final MockitoComponentMockingRule<RecordConfigurationManager> mocker =
+        new MockitoComponentMockingRule<RecordConfigurationManager>(
             DefaultRecordConfigurationManager.class);
 
     @Mock
@@ -88,7 +90,7 @@ public class DefaultRecordConfigurationManagerTest
     {
         MockitoAnnotations.initMocks(this);
         resetMocks();
-        ReflectionUtils.setFieldValue(this.mocker.getComponentUnderTest(), "modules", modules);
+        ReflectionUtils.setFieldValue(this.mocker.getComponentUnderTest(), "modules", this.modules);
     }
 
     @SuppressWarnings("deprecation")
@@ -164,15 +166,15 @@ public class DefaultRecordConfigurationManagerTest
         this.moduleList = Arrays.asList(this.moduleOne, this.moduleTwo);
         doReturn(this.moduleList).when(this.modules).get();
 
-        when(this.moduleOne.process(this.config)).thenReturn(config);
+        when(this.moduleOne.process(this.config)).thenReturn(this.config);
         when(this.moduleTwo.process(this.config)).thenReturn(null);
 
-        Assert.assertEquals(config, this.mocker.getComponentUnderTest().getConfiguration(""));
+        Assert.assertEquals(this.config, this.mocker.getComponentUnderTest().getConfiguration(""));
 
         when(this.moduleOne.process(this.config)).thenReturn(null);
-        when(this.moduleTwo.process(this.config)).thenReturn(config);
+        when(this.moduleTwo.process(this.config)).thenReturn(this.config);
 
-        Assert.assertNotEquals(config, this.mocker.getComponentUnderTest().getConfiguration(""));
+        Assert.assertNotEquals(this.config, this.mocker.getComponentUnderTest().getConfiguration(""));
     }
 
     @Test(expected = NullPointerException.class)

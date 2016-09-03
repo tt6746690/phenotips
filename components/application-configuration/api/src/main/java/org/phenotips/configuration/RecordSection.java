@@ -74,17 +74,17 @@ public interface RecordSection
      *         configured or enabled
      */
     List<RecordElement> getEnabledElements();
-    
+
     /**
      * Sets whether this section and its elements are going to be displayed in the patient record or not.
      */
     void setEnabled(boolean enabled);
-    
+
     /**
      * Sets whether this section should be expanded and fully visible in edit mode by default.
      */
     void setExpandedByDefault(boolean expanded);
-    
+
     /**
      * Sets the list of elements configured in this section
      */

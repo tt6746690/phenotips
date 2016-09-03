@@ -41,7 +41,7 @@ public class DefaultRecordElement implements RecordElement
 
     /** @see #getContainingSection() */
     private final RecordSection section;
-    
+
     protected boolean enabled;
 
     /**
@@ -88,7 +88,7 @@ public class DefaultRecordElement implements RecordElement
     @Override
     public List<String> getDisplayedFields()
     {
-        List<String> result = new LinkedList<String>();
+        List<String> result = new LinkedList<>();
         String usedFields = this.extension.getParameters().get("fields");
         if (usedFields != null) {
             for (String usedField : StringUtils.split(usedFields, ",")) {
@@ -110,9 +110,10 @@ public class DefaultRecordElement implements RecordElement
         return getName();
     }
 
-	@Override
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-		
-	}
+    @Override
+    public void setEnabled(boolean enabled)
+    {
+        this.enabled = enabled;
+
+    }
 }

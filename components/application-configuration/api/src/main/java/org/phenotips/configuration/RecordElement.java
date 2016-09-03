@@ -72,7 +72,7 @@ public interface RecordElement
      * @return a valid section
      */
     RecordSection getContainingSection();
-    
+
     /**
      * Sets whether this element is going to be displayed in the patient record or not.
      */

@@ -17,6 +17,12 @@
  */
 package org.phenotips.configuration.internal;
 
+import org.phenotips.configuration.RecordConfigurationModule;
+
+import org.xwiki.component.annotation.Component;
+import org.xwiki.component.manager.ComponentLookupException;
+import org.xwiki.component.manager.ComponentManager;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -27,11 +33,7 @@ import javax.inject.Named;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 
-import org.phenotips.configuration.RecordConfigurationModule;
 import org.slf4j.Logger;
-import org.xwiki.component.annotation.Component;
-import org.xwiki.component.manager.ComponentLookupException;
-import org.xwiki.component.manager.ComponentManager;
 
 @Singleton
 @Component
@@ -48,7 +50,7 @@ public class RecordConfigurationModuleProvider implements Provider<List<RecordCo
 
     /**
      * Creates a list of modules that implement {@link RecordConfigurationModule} and sort them by priority.
-     * 
+     *
      * @return A list of sorted modules, or {@code emptyList()} otherwise
      */
     @Override
@@ -56,7 +58,7 @@ public class RecordConfigurationModuleProvider implements Provider<List<RecordCo
     {
         try {
             List<RecordConfigurationModule> modules = new LinkedList<>();
-            modules.addAll(this.cm.<RecordConfigurationModule> getInstanceList(RecordConfigurationModule.class));
+            modules.addAll(this.cm.<RecordConfigurationModule>getInstanceList(RecordConfigurationModule.class));
             Collections.sort(modules, ModulePriorityComparator.INSTANCE);
             return modules;
         } catch (ComponentLookupException ex) {
@@ -67,7 +69,7 @@ public class RecordConfigurationModuleProvider implements Provider<List<RecordCo
 
     /**
      * Compares the priority of the modules
-     * 
+     *
      * @return Ordered list of Modules
      */
     private static final class ModulePriorityComparator implements Comparator<RecordConfigurationModule>

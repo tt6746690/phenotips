@@ -28,21 +28,19 @@ import org.xwiki.stability.Unstable;
  */
 @Unstable
 @Role
-public interface RecordConfigurationManager {
+public interface RecordConfigurationManager
+{
     /**
-     * Retrieves the {@code RecordConfiguration patient record configuration}
-     * active for the current user.
+     * Retrieves the {@code RecordConfiguration patient record configuration} active for the current user.
      *
-     * @return a valid configuration, either the global one or one configured,
-     *         for example in one of the user's groups
+     * @return a valid configuration, either the global one or one configured, for example in one of the user's groups
      */
     @Deprecated
     RecordConfiguration getActiveConfiguration();
 
     /**
-     * Retrieves the
-     * {@code DefaultRecordConfiguration patient record configuration} active for the current user.
-     * 
+     * Retrieves the {@code DefaultRecordConfiguration patient record configuration} active for the current user.
+     *
      * @return a valid configuration for the patient record
      */
     RecordConfiguration getConfiguration(String recordType);

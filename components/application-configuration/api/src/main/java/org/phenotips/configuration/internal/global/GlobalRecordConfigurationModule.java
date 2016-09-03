@@ -21,6 +21,7 @@ import org.phenotips.configuration.RecordConfiguration;
 import org.phenotips.configuration.RecordConfigurationModule;
 import org.phenotips.configuration.RecordSection;
 import org.phenotips.configuration.internal.DefaultRecordConfiguration;
+
 import org.xwiki.uiextension.UIExtension;
 import org.xwiki.uiextension.UIExtensionFilter;
 import org.xwiki.uiextension.UIExtensionManager;
@@ -52,9 +53,9 @@ public class GlobalRecordConfigurationModule implements RecordConfigurationModul
     protected UIExtensionFilter orderFilter;
 
     @Override
-	public RecordConfiguration process(RecordConfiguration config)
-	{			
-        List<RecordSection> result = new LinkedList<RecordSection>();
+    public RecordConfiguration process(RecordConfiguration config)
+    {
+        List<RecordSection> result = new LinkedList<>();
         RecordConfiguration updatedConfig = new DefaultRecordConfiguration();
         List<UIExtension> sections = this.uixManager.get("org.phenotips.patientSheet.content");
         sections = this.orderFilter.filter(sections, SORT_PARAMETER_NAME);
@@ -64,21 +65,20 @@ public class GlobalRecordConfigurationModule implements RecordConfigurationModul
         }
         updatedConfig.setSections(result);
         return updatedConfig;
-	}
+    }
 
-	@Override
-	public int getPriority()
-	{
-	    return 0;
-	}
+    @Override
+    public int getPriority()
+    {
+        return 0;
+    }
 
-	@Override
-	public String[] getSupportedRecordTypes()
-	{
-	    String[] recType = {"patient"};
-	    
-	    return recType;
-	}
+    @Override
+    public String[] getSupportedRecordTypes()
+    {
+        String[] recType = { "patient" };
 
-   
+        return recType;
+    }
+
 }

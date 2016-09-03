@@ -21,7 +21,6 @@ import org.phenotips.components.ComponentManagerRegistry;
 import org.phenotips.configuration.RecordConfiguration;
 import org.phenotips.configuration.RecordElement;
 import org.phenotips.configuration.RecordSection;
-import org.phenotips.data.Patient;
 
 import org.xwiki.component.manager.ComponentLookupException;
 import org.xwiki.model.EntityType;
@@ -32,7 +31,6 @@ import org.xwiki.uiextension.UIExtension;
 import org.xwiki.uiextension.UIExtensionFilter;
 import org.xwiki.uiextension.UIExtensionManager;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -46,7 +44,6 @@ import org.slf4j.LoggerFactory;
 import com.xpn.xwiki.XWikiContext;
 import com.xpn.xwiki.XWikiException;
 import com.xpn.xwiki.objects.BaseObject;
-import com.xpn.xwiki.objects.classes.BaseClass;
 
 /**
  * Default (global) implementation of the {@link RecordConfiguration} role.
@@ -73,7 +70,7 @@ public class GlobalRecordConfiguration implements RecordConfiguration
 
     /** Sorts fields by their declared order. */
     protected UIExtensionFilter orderFilter;
-    
+
     protected List<RecordSection> sectionList;
 
     /** Logging helper object. */
@@ -97,7 +94,7 @@ public class GlobalRecordConfiguration implements RecordConfiguration
     @Override
     public List<RecordSection> getAllSections()
     {
-        List<RecordSection> result = new LinkedList<RecordSection>();
+        List<RecordSection> result = new LinkedList<>();
         List<UIExtension> sections = this.uixManager.get("org.phenotips.patientSheet.content");
         sections = this.orderFilter.filter(sections, SORT_PARAMETER_NAME);
         for (UIExtension sectionExtension : sections) {
@@ -110,7 +107,7 @@ public class GlobalRecordConfiguration implements RecordConfiguration
     @Override
     public List<RecordSection> getEnabledSections()
     {
-        List<RecordSection> result = new LinkedList<RecordSection>();
+        List<RecordSection> result = new LinkedList<>();
         for (RecordSection section : getAllSections()) {
             if (section.isEnabled()) {
                 result.add(section);
@@ -118,16 +115,17 @@ public class GlobalRecordConfiguration implements RecordConfiguration
         }
         return Collections.unmodifiableList(result);
     }
-    
+
     @Override
-	public void setSections(List<RecordSection> sections) {
-	    this.sectionList = sections;		
-	}
+    public void setSections(List<RecordSection> sections)
+    {
+        this.sectionList = sections;
+    }
 
     @Override
     public List<String> getEnabledFieldNames()
     {
-        List<String> result = new LinkedList<String>();
+        List<String> result = new LinkedList<>();
         for (RecordSection section : getEnabledSections()) {
             for (RecordElement element : section.getEnabledElements()) {
                 result.addAll(element.getDisplayedFields());
@@ -139,7 +137,7 @@ public class GlobalRecordConfiguration implements RecordConfiguration
     @Override
     public List<String> getEnabledNonIdentifiableFieldNames()
     {
-        List<String> result = new LinkedList<String>();
+        List<String> result = new LinkedList<>();
         for (RecordSection section : getEnabledSections()) {
             for (RecordElement element : section.getEnabledElements()) {
                 if (!element.containsPrivateIdentifiableInformation()) {

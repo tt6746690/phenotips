@@ -56,7 +56,7 @@ public interface RecordConfiguration
      * @return an unmodifiable ordered list of sections, or an empty list if none are defined
      */
     List<RecordSection> getAllSections();
-    
+
     /**
      * Sets which sections will be added to the record configuration
      */
