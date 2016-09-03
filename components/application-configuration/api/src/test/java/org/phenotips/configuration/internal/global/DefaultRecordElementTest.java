@@ -71,27 +71,59 @@ public class DefaultRecordElementTest
         UIExtension extension = mock(UIExtension.class);
         when(extension.getParameters()).thenReturn(Collections.<String, String>emptyMap());
         when(extension.getId()).thenReturn("org.phenotips.patientSheet.field.exam_date");
+
         RecordElement s = new DefaultRecordElement(extension, null);
         Assert.assertEquals("Exam date", s.getName());
     }
 
-    /** {@link RecordElement#isEnabled()} returns false only when explicitly disabled in the properties. */
+    /** {@link RecordElement#isEnabled()} returns true when there's no setting in the properties. */
     @Test
-    public void isEnabled()
+    public void isEnabledReturnsTrueForNullSetting()
     {
         UIExtension extension = mock(UIExtension.class);
         Map<String, String> params = new HashMap<>();
         when(extension.getParameters()).thenReturn(params);
+
         RecordElement s = new DefaultRecordElement(extension, null);
         Assert.assertTrue(s.isEnabled());
+    }
+
+    /** {@link RecordElement#isEnabled()} returns true when there's no value set in the properties. */
+    @Test
+    public void isEnabledReturnsTrueForEmptySetting()
+    {
+        UIExtension extension = mock(UIExtension.class);
+        Map<String, String> params = new HashMap<>();
+        when(extension.getParameters()).thenReturn(params);
 
         params.put("enabled", "");
+        RecordElement s = new DefaultRecordElement(extension, null);
         Assert.assertTrue(s.isEnabled());
+    }
+
+    /** {@link RecordElement#isEnabled()} returns true when set to "true" in the properties. */
+    @Test
+    public void isEnabledReturnsTrueForTrueSetting()
+    {
+        UIExtension extension = mock(UIExtension.class);
+        Map<String, String> params = new HashMap<>();
+        when(extension.getParameters()).thenReturn(params);
 
         params.put("enabled", "true");
+        RecordElement s = new DefaultRecordElement(extension, null);
         Assert.assertTrue(s.isEnabled());
+    }
+
+    /** {@link RecordElement#isEnabled()} returns false only when explicitly disabled in the properties. */
+    @Test
+    public void isEnabledReturnsFalseForFalseSetting()
+    {
+        UIExtension extension = mock(UIExtension.class);
+        Map<String, String> params = new HashMap<>();
+        when(extension.getParameters()).thenReturn(params);
 
         params.put("enabled", "false");
+        RecordElement s = new DefaultRecordElement(extension, null);
         Assert.assertFalse(s.isEnabled());
     }
 

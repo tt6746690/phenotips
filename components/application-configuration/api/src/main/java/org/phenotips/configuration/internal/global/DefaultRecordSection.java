@@ -47,7 +47,7 @@ public class DefaultRecordSection implements RecordSection
     /** Sorts fields by their declared order. */
     protected final UIExtensionFilter orderFilter;
 
-    protected boolean enabled;
+    protected boolean enabled = true;
 
     protected boolean expanded;
 
@@ -65,7 +65,9 @@ public class DefaultRecordSection implements RecordSection
         this.extension = extension;
         this.uixManager = uixManager;
         this.orderFilter = orderFilter;
-        this.enabled = isEnabled(this.extension);
+        if (extension != null) {
+            this.enabled = !StringUtils.equals("false", extension.getParameters().get("enabled"));
+        }
         this.expanded = isExpandedByDefault();
     }
 
@@ -95,7 +97,10 @@ public class DefaultRecordSection implements RecordSection
     @Override
     public boolean isExpandedByDefault()
     {
-        return StringUtils.equals("true", this.extension.getParameters().get("expanded_by_default"));
+        if (this.extension != null) {
+            return StringUtils.equals("true", this.extension.getParameters().get("expanded_by_default"));
+        }
+        return false;
     }
 
     @Override
@@ -152,18 +157,5 @@ public class DefaultRecordSection implements RecordSection
     public void setElements(List<RecordElement> elements)
     {
         this.elements = elements;
-    }
-
-    /**
-     * Check if an extension is enabled. Extensions are disabled by adding a {@code enabled=false} parameter. By default
-     * extensions are enabled, so this method returns {@code false } only if it is explicitly disabled.
-     *
-     * @param extension the extension to check
-     * @return {@code false} if this extension has a parameter named {@code enabled} with the value {@code false},
-     *         {@code true} otherwise
-     */
-    private boolean isEnabled(UIExtension extension)
-    {
-        return !StringUtils.equals("false", extension.getParameters().get("enabled"));
     }
 }

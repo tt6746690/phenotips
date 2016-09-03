@@ -81,22 +81,54 @@ public class DefaultRecordSectionTest
     }
 
     /** {@link RecordSection#isEnabled()} returns false only when explicitly disabled in the properties. */
+    /** {@link RecordSection#isEnabled()} returns true when there's no setting in the properties. */
     @Test
-    public void isEnabled()
+    public void isEnabledReturnsTrueForNullSetting()
     {
         UIExtension extension = mock(UIExtension.class);
         Map<String, String> params = new HashMap<>();
         when(extension.getParameters()).thenReturn(params);
+
         RecordSection s = new DefaultRecordSection(extension, null, null);
         Assert.assertTrue(s.isEnabled());
+    }
+
+    /** {@link RecordSection#isEnabled()} returns true when there's no value set in the properties. */
+    @Test
+    public void isEnabledReturnsTrueForEmptySetting()
+    {
+        UIExtension extension = mock(UIExtension.class);
+        Map<String, String> params = new HashMap<>();
+        when(extension.getParameters()).thenReturn(params);
 
         params.put("enabled", "");
+        RecordSection s = new DefaultRecordSection(extension, null, null);
         Assert.assertTrue(s.isEnabled());
+    }
+
+    /** {@link RecordSection#isEnabled()} returns true when set to "true" in the properties. */
+    @Test
+    public void isEnabledReturnsTrueForTrueSetting()
+    {
+        UIExtension extension = mock(UIExtension.class);
+        Map<String, String> params = new HashMap<>();
+        when(extension.getParameters()).thenReturn(params);
 
         params.put("enabled", "true");
+        RecordSection s = new DefaultRecordSection(extension, null, null);
         Assert.assertTrue(s.isEnabled());
+    }
+
+    /** {@link RecordSection#isEnabled()} returns false only when explicitly disabled in the properties. */
+    @Test
+    public void isEnabledReturnsFalseForFalseSetting()
+    {
+        UIExtension extension = mock(UIExtension.class);
+        Map<String, String> params = new HashMap<>();
+        when(extension.getParameters()).thenReturn(params);
 
         params.put("enabled", "false");
+        RecordSection s = new DefaultRecordSection(extension, null, null);
         Assert.assertFalse(s.isEnabled());
     }
 

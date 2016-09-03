@@ -54,7 +54,9 @@ public class DefaultRecordElement implements RecordElement
     {
         this.extension = extension;
         this.section = section;
-        this.enabled = !StringUtils.equals("false", this.extension.getParameters().get("enabled"));
+        if (this.extension != null) {
+            this.enabled = !StringUtils.equals("false", this.extension.getParameters().get("enabled"));
+        }
     }
 
     @Override

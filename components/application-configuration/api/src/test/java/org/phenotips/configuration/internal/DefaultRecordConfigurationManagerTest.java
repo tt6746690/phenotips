@@ -30,7 +30,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import javax.inject.Provider;
 
@@ -46,8 +45,8 @@ import org.mockito.MockitoAnnotations;
 import com.xpn.xwiki.XWiki;
 import com.xpn.xwiki.XWikiContext;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.when;
 
 /**
@@ -93,14 +92,6 @@ public class DefaultRecordConfigurationManagerTest
         ReflectionUtils.setFieldValue(this.mocker.getComponentUnderTest(), "modules", this.modules);
     }
 
-    @SuppressWarnings("deprecation")
-    @Test
-    public void callsGetActiveConfiguration() throws ComponentLookupException
-    {
-        // Fix me
-        Assert.assertEquals(this.config, this.mocker.getComponentUnderTest().getActiveConfiguration());
-    }
-
     @Test
     public void defaultDecisionIsDeny() throws ComponentLookupException
     {
@@ -109,83 +100,61 @@ public class DefaultRecordConfigurationManagerTest
     }
 
     @Test
-    public void moduleDecisionIsUsed() throws Exception
+    public void moduleOutputIsUsed() throws Exception
     {
-        // Fix me
-        Set<RecordConfigurationModule> moduleList;
+        this.moduleList = Collections.singletonList(this.moduleOne);
+        doReturn(this.moduleList).when(this.modules).get();
 
-        moduleList = Collections.singleton(this.moduleOne);
-        doReturn(moduleList).when(this.modules).get();
-
-        when(this.moduleOne.process(this.config)).thenReturn(null);
+        when(this.moduleOne.process(any(RecordConfiguration.class))).thenReturn(null);
         Assert.assertNull(this.mocker.getComponentUnderTest().getConfiguration(""));
 
-        when(this.moduleOne.process(this.config)).thenReturn(this.config);
-        Assert.assertEquals(null, this.mocker.getComponentUnderTest().getConfiguration(""));
+        when(this.moduleOne.process(any(RecordConfiguration.class))).thenReturn(this.config);
+        Assert.assertSame(this.config, this.mocker.getComponentUnderTest().getConfiguration(""));
 
     }
 
     @Test
-    public void modulesAreCascadedUntilNonNullIsReturned() throws Exception
+    public void modulesAreCascaded() throws Exception
     {
         this.moduleList = Arrays.asList(this.moduleOne, this.moduleTwo, this.moduleThree);
         doReturn(this.moduleList).when(this.modules).get();
+        when(this.moduleOne.process(any(RecordConfiguration.class))).thenReturn(this.config);
+        when(this.moduleTwo.process(this.config)).thenReturn(null);
+        when(this.moduleThree.process(null)).thenReturn(this.config);
 
-        // By default all modules return null
-        Assert.assertNull(this.mocker.getComponentUnderTest().getConfiguration(""));
+        Assert.assertSame(this.config, this.mocker.getComponentUnderTest().getConfiguration(""));
         InOrder order = Mockito.inOrder(this.moduleOne, this.moduleTwo, this.moduleThree);
-        order.verify(this.moduleOne).process(this.config);
-        order.verify(this.moduleTwo).process(this.config);
-        order.verify(this.moduleThree).process(this.config);
-
-        resetMocks();
-        when(this.moduleOne.process(this.config)).thenReturn(this.config);
-        Assert.assertEquals(this.config, this.mocker.getComponentUnderTest().getConfiguration(""));
-        order.verify(this.moduleOne).process(this.config);
-        order.verify(this.moduleTwo, never()).process(this.config);
-        order.verify(this.moduleThree, never()).process(this.config);
-
-        resetMocks();
-        when(this.moduleOne.process(this.config)).thenReturn(null);
-        Assert.assertEquals(this.config, this.mocker.getComponentUnderTest().getConfiguration(""));
-        order.verify(this.moduleOne).process(this.config);
-        order.verify(this.moduleTwo, never()).process(this.config);
-        order.verify(this.moduleThree, never()).process(this.config);
-
-        resetMocks();
-        when(this.moduleOne.process(this.config)).thenReturn(this.config);
-        Assert.assertEquals(this.config, this.mocker.getComponentUnderTest().getConfiguration(""));
-        order.verify(this.moduleOne).process(this.config);
-        order.verify(this.moduleTwo).process(this.config);
-        order.verify(this.moduleThree, never()).process(this.config);
+        order.verify(this.moduleOne).process(any(RecordConfiguration.class));
+        order.verify(this.moduleTwo).process(any(RecordConfiguration.class));
+        order.verify(this.moduleThree).process(any(RecordConfiguration.class));
     }
 
     @Test
-    public void firstNonNullDecisionIsReturned() throws Exception
+    public void allModulesAreInvoked() throws Exception
     {
         this.moduleList = Arrays.asList(this.moduleOne, this.moduleTwo);
         doReturn(this.moduleList).when(this.modules).get();
 
-        when(this.moduleOne.process(this.config)).thenReturn(this.config);
+        when(this.moduleOne.process(any(RecordConfiguration.class))).thenReturn(this.config);
         when(this.moduleTwo.process(this.config)).thenReturn(null);
 
-        Assert.assertEquals(this.config, this.mocker.getComponentUnderTest().getConfiguration(""));
+        Assert.assertNull(this.mocker.getComponentUnderTest().getConfiguration(""));
 
-        when(this.moduleOne.process(this.config)).thenReturn(null);
-        when(this.moduleTwo.process(this.config)).thenReturn(this.config);
+        when(this.moduleOne.process(any(RecordConfiguration.class))).thenReturn(null);
+        when(this.moduleTwo.process(null)).thenReturn(this.config);
 
-        Assert.assertNotEquals(this.config, this.mocker.getComponentUnderTest().getConfiguration(""));
+        Assert.assertSame(this.config, this.mocker.getComponentUnderTest().getConfiguration(""));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void exceptionsInModulesAreIgnored() throws Exception
     {
         this.moduleList = Arrays.asList(this.moduleOne, this.moduleTwo);
         doReturn(this.moduleList).when(this.modules).get();
 
-        when(this.moduleOne.process(this.config)).thenThrow(new NullPointerException());
-        when(this.moduleTwo.process(this.config)).thenReturn(this.config);
-        Assert.assertNull(this.mocker.getComponentUnderTest().getConfiguration(""));
+        when(this.moduleOne.process(any(RecordConfiguration.class))).thenThrow(new NullPointerException());
+        when(this.moduleTwo.process(any(RecordConfiguration.class))).thenReturn(this.config);
+        Assert.assertSame(this.config, this.mocker.getComponentUnderTest().getConfiguration(""));
     }
 
     private void resetMocks()

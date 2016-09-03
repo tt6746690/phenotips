@@ -67,15 +67,14 @@ public class ConfiguredRecordElementTest
         Map<String, String> params = new HashMap<>();
         when(extension.getId()).thenReturn("age");
         when(extension.getParameters()).thenReturn(params);
+        params.put("enabled", "true");
         RecordElement s = new ConfiguredRecordElement(cc, extension, null);
 
         when(cc.getFieldsOverride()).thenReturn(Collections.<String>emptyList());
-        params.put("enabled", "true");
         Assert.assertTrue(s.isEnabled());
 
         when(cc.getFieldsOverride()).thenReturn(null);
-        params.put("enabled", "false");
-        Assert.assertFalse(s.isEnabled());
+        Assert.assertTrue(s.isEnabled());
     }
 
     /** {@link RecordElement#toString()} returns the title set in the properties. */

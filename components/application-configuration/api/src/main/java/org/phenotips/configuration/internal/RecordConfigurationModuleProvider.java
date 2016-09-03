@@ -61,9 +61,8 @@ public class RecordConfigurationModuleProvider implements Provider<List<RecordCo
             Collections.sort(modules, ModulePriorityComparator.INSTANCE);
             return modules;
         } catch (ComponentLookupException ex) {
-            this.logger.warn("Failed to create the list: {}", ex.getMessage());
+            throw new RuntimeException("Failed to look up record configuration modules: " + ex.getMessage(), ex);
         }
-        return Collections.emptyList();
     }
 
     private static final class ModulePriorityComparator implements Comparator<RecordConfigurationModule>
