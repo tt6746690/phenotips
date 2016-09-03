@@ -35,7 +35,7 @@ import javax.inject.Named;
 
 /**
  * Implementation of {@link RecordConfiguration} that takes into account a {@link DefaultConsentAuthorizer custom
- * configuration}.
+ * configuration}. Its {@link #getPriority() priority} is {@code 90}.
  *
  * @version $Id$
  * @since 1.3
@@ -80,7 +80,7 @@ public class ConsentsRecordConfigurationModule extends DefaultConsentAuthorizer 
     @Override
     public int getPriority()
     {
-        return 300;
+        return 90;
     }
 
     @Override

@@ -33,12 +33,13 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
- * Default (global) implementation of the {@link RecordConfiguration} role.
+ * Default (global) implementation of the {@link RecordConfiguration} role for patient records. Its
+ * {@link #getPriority() priority} is {@code 0}.
  *
  * @version $Id$
- * @since 1.3
+ * @since 1.3M3
  */
-public class GlobalRecordConfigurationModule implements RecordConfigurationModule
+public class GlobalPatientRecordConfigurationModule implements RecordConfigurationModule
 {
     /** The name of the UIX parameter used for specifying the order of fields and sections. */
     private static final String SORT_PARAMETER_NAME = "order";

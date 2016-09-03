@@ -48,7 +48,7 @@ import com.xpn.xwiki.doc.XWikiDocument;
 
 /**
  * Implementation of {@link RecordConfiguration} that takes into account a {@link CustomConfiguration custom
- * configuration}.
+ * configuration}. Its {@link #getPriority() priority} is {@code 50}.
  *
  * @version $Id$
  * @since 1.3
@@ -147,7 +147,7 @@ public class StudyRecordConfigurationModule implements RecordConfigurationModule
     @Override
     public int getPriority()
     {
-        return 100;
+        return 50;
     }
 
     @Override
