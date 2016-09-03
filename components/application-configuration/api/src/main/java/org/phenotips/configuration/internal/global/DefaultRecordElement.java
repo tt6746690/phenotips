@@ -42,7 +42,7 @@ public class DefaultRecordElement implements RecordElement
     /** @see #getContainingSection() */
     private final RecordSection section;
 
-    protected boolean enabled;
+    private boolean enabled;
 
     /**
      * Simple constructor passing all the needed components.
@@ -114,6 +114,5 @@ public class DefaultRecordElement implements RecordElement
     public void setEnabled(boolean enabled)
     {
         this.enabled = enabled;
-
     }
 }

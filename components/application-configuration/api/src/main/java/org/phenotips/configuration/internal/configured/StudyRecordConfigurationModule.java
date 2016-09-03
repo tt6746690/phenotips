@@ -29,7 +29,6 @@ import org.xwiki.model.EntityType;
 import org.xwiki.model.reference.DocumentReferenceResolver;
 import org.xwiki.model.reference.EntityReference;
 import org.xwiki.uiextension.UIExtensionFilter;
-import org.xwiki.uiextension.UIExtensionManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -74,16 +73,12 @@ public class StudyRecordConfigurationModule implements RecordConfigurationModule
 
     /** Provides access to the current request context. */
     @Inject
-    protected Provider<XWikiContext> xcontextProvider;
-
-    /** Lists the patient form sections and fields. */
-    @Inject
-    protected UIExtensionManager uixManager;
+    private Provider<XWikiContext> xcontextProvider;
 
     /** Sorts fields by their declared order. */
     @Inject
     @Named("sortByParameter")
-    protected UIExtensionFilter orderFilter;
+    private UIExtensionFilter orderFilter;
 
     /** Parses serialized document references into proper references. */
     @Inject

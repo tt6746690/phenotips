@@ -50,7 +50,7 @@ import com.xpn.xwiki.objects.BaseObject;
  *
  * @version $Id$
  * @since 1.0M9
- * @deprecated
+ * @deprecated since 1.3M3
  */
 @Deprecated
 public class GlobalRecordConfiguration implements RecordConfiguration

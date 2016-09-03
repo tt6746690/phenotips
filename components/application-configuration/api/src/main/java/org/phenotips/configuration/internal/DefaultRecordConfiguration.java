@@ -60,7 +60,7 @@ public class DefaultRecordConfiguration implements RecordConfiguration
     /** Logging helper object. */
     private Logger logger = LoggerFactory.getLogger(DefaultRecordConfiguration.class);
 
-    /** List of all Record Sections */
+    /** List of all Record Sections. */
     private List<RecordSection> sections;
 
     @Override
@@ -99,6 +99,7 @@ public class DefaultRecordConfiguration implements RecordConfiguration
         return Collections.unmodifiableList(result);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public List<String> getEnabledNonIdentifiableFieldNames()
     {

@@ -58,7 +58,10 @@ public interface RecordConfiguration
     List<RecordSection> getAllSections();
 
     /**
-     * Sets which sections will be added to the record configuration
+     * Update the list of available section.
+     *
+     * @param sections a list of sections, may be empty
+     * @since 1.3M3
      */
     void setSections(List<RecordSection> sections);
 
@@ -75,7 +78,9 @@ public interface RecordConfiguration
      *
      * @return an unmodifiable ordered list of field names, empty if no non-identifiable fields are enabled or the
      *         configuration is missing
+     * @deprecated since 1.3, this functionality has moved in the Consents module
      */
+    @Deprecated
     List<String> getEnabledNonIdentifiableFieldNames();
 
     /**

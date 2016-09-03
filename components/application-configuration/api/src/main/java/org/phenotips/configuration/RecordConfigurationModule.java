@@ -20,26 +20,42 @@ package org.phenotips.configuration;
 import org.xwiki.component.annotation.Role;
 import org.xwiki.stability.Unstable;
 
+/**
+ * Modular record configuration service which provides or alters the record configuration according to a specific
+ * purpose. This can be implemented by different components, each one with a different priority. When a specific record
+ * configuration is requested, each of the available implementations will be queried by the
+ * {@link RecordConfigurationManager} in ascending order of their priority, starting with an empty configuration that
+ * can be altered by each module, and the final record configuration is considered the active configuration to be
+ * displayed.
+ *
+ * @version $Id$
+ * @since 1.3M3
+ */
 @Unstable
 @Role
 public interface RecordConfigurationModule
 {
-
     /**
-     * Configures how the patient record appears.
+     * Configure how the record appears.
      *
-     * @param documents the previous configuration
-     * @return {@link RecordConfiguration} Patient record is configured to the user's preference
+     * @param config the previous configuration
+     * @return an updated configuration
      */
     RecordConfiguration process(RecordConfiguration config);
 
     /**
+     * The priority of this implementation. Implementations with a lower priority will be queried before implementations
+     * with a higher priority. The base implementation has a priority of 0, and returns the global configuration. It is
+     * recommended that the returned values be in the [0..100] range.
+     *
      * @return a positive number
      */
     int getPriority();
 
     /**
-     * @return the record type.
+     * Get the record types supported by this module.
+     *
+     * @return an array of record type identifiers, such as {@code patient} or {@code family}
      */
     String[] getSupportedRecordTypes();
 }

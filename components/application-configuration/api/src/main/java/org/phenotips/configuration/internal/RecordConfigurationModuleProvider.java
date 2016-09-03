@@ -35,12 +35,16 @@ import javax.inject.Singleton;
 
 import org.slf4j.Logger;
 
+/**
+ * Returns the list of active {@link RecordConfigurationModule}s, sorted in ascending order of their priority.
+ *
+ * @version $Id$
+ * @since 1.3M3
+ */
 @Singleton
 @Component
 public class RecordConfigurationModuleProvider implements Provider<List<RecordConfigurationModule>>
 {
-
-    /** Logging helper. */
     @Inject
     private Logger logger;
 
@@ -48,11 +52,6 @@ public class RecordConfigurationModuleProvider implements Provider<List<RecordCo
     @Named("wiki")
     private ComponentManager cm;
 
-    /**
-     * Creates a list of modules that implement {@link RecordConfigurationModule} and sort them by priority.
-     *
-     * @return A list of sorted modules, or {@code emptyList()} otherwise
-     */
     @Override
     public List<RecordConfigurationModule> get()
     {
@@ -67,11 +66,6 @@ public class RecordConfigurationModuleProvider implements Provider<List<RecordCo
         return Collections.emptyList();
     }
 
-    /**
-     * Compares the priority of the modules
-     *
-     * @return Ordered list of Modules
-     */
     private static final class ModulePriorityComparator implements Comparator<RecordConfigurationModule>
     {
         private static final ModulePriorityComparator INSTANCE = new ModulePriorityComparator();

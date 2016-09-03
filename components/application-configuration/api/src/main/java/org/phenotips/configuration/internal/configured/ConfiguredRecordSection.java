@@ -35,7 +35,7 @@ import java.util.List;
  *
  * @version $Id$
  * @since 1.0M9
- * @deprecated
+ * @deprecated since 1.3M3
  */
 @Deprecated
 public class ConfiguredRecordSection extends DefaultRecordSection implements RecordSection

@@ -26,17 +26,12 @@ import org.phenotips.data.Patient;
 import org.phenotips.data.PatientRepository;
 
 import org.xwiki.bridge.DocumentAccessBridge;
-import org.xwiki.uiextension.UIExtensionFilter;
-import org.xwiki.uiextension.UIExtensionManager;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Provider;
-
-import com.xpn.xwiki.XWikiContext;
 
 /**
  * Implementation of {@link RecordConfiguration} that takes into account a {@link DefaultConsentAuthorizer custom
@@ -54,22 +49,10 @@ public class ConsentsRecordConfigurationModule extends DefaultConsentAuthorizer 
     @Inject
     private DocumentAccessBridge dab;
 
-    /** Provides access to the current request context. */
-    protected Provider<XWikiContext> xcontextProvider;
-
-    /** Lists the patient form sections and fields. */
-    @Inject
-    protected UIExtensionManager uixManager;
-
-    /** Sorts fields by their declared order. */
-    @Inject
-    @Named("sortByParameter")
-    protected UIExtensionFilter orderFilter;
-
     @Override
     public RecordConfiguration process(RecordConfiguration config)
     {
-        Patient patient = this.patients.getPatientById(this.dab.getCurrentDocumentReference().toString());
+        Patient patient = this.patients.get(this.dab.getCurrentDocumentReference().toString());
         if (patient == null) {
             return config;
         }

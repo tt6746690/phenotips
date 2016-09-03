@@ -45,7 +45,7 @@ import com.xpn.xwiki.XWikiContext;
  *
  * @version $Id$
  * @since 1.0M9
- * @deprecated
+ * @deprecated since 1.3
  */
 @Deprecated
 public class ConfiguredRecordConfiguration extends GlobalRecordConfiguration implements RecordConfiguration
