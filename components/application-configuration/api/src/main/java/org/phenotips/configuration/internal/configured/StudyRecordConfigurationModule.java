@@ -153,9 +153,7 @@ public class StudyRecordConfigurationModule implements RecordConfigurationModule
     @Override
     public String[] getSupportedRecordTypes()
     {
-        String[] recType = { "patient" };
-
-        return recType;
+        return new String[] { "patient" };
     }
 
     /**

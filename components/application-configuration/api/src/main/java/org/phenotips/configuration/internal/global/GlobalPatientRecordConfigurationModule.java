@@ -77,9 +77,6 @@ public class GlobalPatientRecordConfigurationModule implements RecordConfigurati
     @Override
     public String[] getSupportedRecordTypes()
     {
-        String[] recType = { "patient" };
-
-        return recType;
+        return new String[] { "patient" };
     }
-
 }

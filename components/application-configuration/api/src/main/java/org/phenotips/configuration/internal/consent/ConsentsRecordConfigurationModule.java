@@ -86,8 +86,6 @@ public class ConsentsRecordConfigurationModule extends DefaultConsentAuthorizer 
     @Override
     public String[] getSupportedRecordTypes()
     {
-        String[] recType = { "patient" };
-        return recType;
+        return new String[] { "patient" };
     }
-
 }
