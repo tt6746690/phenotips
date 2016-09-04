@@ -19,7 +19,7 @@ package org.phenotips.configuration.internal.configured;
 
 import org.phenotips.configuration.RecordElement;
 import org.phenotips.configuration.RecordSection;
-import org.phenotips.configuration.internal.global.DefaultRecordElement;
+import org.phenotips.configuration.internal.DefaultRecordElement;
 
 import org.xwiki.uiextension.UIExtension;
 

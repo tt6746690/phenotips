@@ -15,10 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses/
  */
-package org.phenotips.configuration.internal.global;
+package org.phenotips.configuration.internal;
 
 import org.phenotips.configuration.RecordElement;
 import org.phenotips.configuration.RecordSection;
+import org.phenotips.configuration.internal.DefaultRecordSection;
 
 import org.xwiki.component.manager.ComponentLookupException;
 import org.xwiki.uiextension.UIExtension;
