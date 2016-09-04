@@ -582,6 +582,18 @@
               <method>org.xwiki.security.authorization.Right getGrantedRight()</method>
               <justification>New API method bringing XWiki Rights into PhenoTips Permissions.</justification>
             </difference>
+            <difference>
+              <className>org/phenotips/configuration/Record*</className>
+              <differenceType>7012</differenceType>
+              <method>void set*(*)</method>
+              <justification>New API methods needed for making the configuration more extensible.</justification>
+            </difference>
+            <difference>
+              <className>org/phenotips/configuration/RecordConfigurationManager</className>
+              <differenceType>7012</differenceType>
+              <method>org.phenotips.configuration.RecordConfiguration getConfiguration(java.lang.String)</method>
+              <justification>New API methods needed for making the configuration more extensible.</justification>
+            </difference>
           </ignored>
           <excludes>
             <exclude>**/internal/**</exclude>
