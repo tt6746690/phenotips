@@ -34,7 +34,7 @@ import org.apache.commons.lang3.StringUtils;
  * Default (global) implementation for {@link RecordSection}.
  *
  * @version $Id$
- * @since 1.0M9
+ * @since 1.3M3
  */
 public class DefaultRecordSection implements RecordSection
 {

@@ -17,9 +17,6 @@
  */
 package org.phenotips.configuration.internal.configured;
 
-import org.phenotips.configuration.RecordConfigurationManager;
-import org.phenotips.configuration.internal.global.GlobalRecordConfiguration;
-
 import org.xwiki.component.manager.ComponentLookupException;
 
 import java.util.Collections;
@@ -36,7 +33,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Tests for the default {@link RecordConfigurationManager} implementation, {@link GlobalRecordConfiguration}.
+ * Tests for {@link CustomConfiguration}.
  *
  * @version $Id$
  */

@@ -46,7 +46,7 @@ import com.xpn.xwiki.objects.BaseObject;
  * Default (global) implementation of the {@link RecordConfiguration} role.
  *
  * @version $Id$
- * @since 1.0M9
+ * @since 1.3M3
  */
 public class DefaultRecordConfiguration implements RecordConfiguration
 {
@@ -70,12 +70,6 @@ public class DefaultRecordConfiguration implements RecordConfiguration
     }
 
     @Override
-    public void setSections(List<RecordSection> sections)
-    {
-        this.sections = sections;
-    }
-
-    @Override
     public List<RecordSection> getEnabledSections()
     {
         List<RecordSection> result = new LinkedList<>();
@@ -85,6 +79,12 @@ public class DefaultRecordConfiguration implements RecordConfiguration
             }
         }
         return Collections.unmodifiableList(result);
+    }
+
+    @Override
+    public void setSections(List<RecordSection> sections)
+    {
+        this.sections = sections;
     }
 
     @Override
