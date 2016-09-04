@@ -84,6 +84,14 @@ public interface RecordConfiguration
     List<String> getEnabledNonIdentifiableFieldNames();
 
     /**
+     * The list of possible fields defined in the application. This doesn't include metadata stored in separate
+     * entities, such as measurements, relatives, additional files, etc.
+     *
+     * @return an unmodifiable ordered list of field names, empty if none are available or the configuration is missing
+     */
+    List<String> getAllFieldNames();
+
+    /**
      * The custom predefined phenotypes displayed in the "Clinical Symptoms" section are configured in a document, and
      * this type of configuration is called a "Phenotype Mapping". Multiple such mappings can exist in a PhenoTips
      * instance, and one of these mappings can be selected as the preferred mapping to be used globally or for each

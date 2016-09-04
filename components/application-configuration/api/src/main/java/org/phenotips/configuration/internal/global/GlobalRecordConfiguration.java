@@ -149,6 +149,18 @@ public class GlobalRecordConfiguration implements RecordConfiguration
     }
 
     @Override
+    public List<String> getAllFieldNames()
+    {
+        List<String> result = new LinkedList<>();
+        for (RecordSection section : getAllSections()) {
+            for (RecordElement element : section.getAllElements()) {
+                result.addAll(element.getDisplayedFields());
+            }
+        }
+        return Collections.unmodifiableList(result);
+    }
+
+    @Override
     public DocumentReference getPhenotypeMapping()
     {
         try {
