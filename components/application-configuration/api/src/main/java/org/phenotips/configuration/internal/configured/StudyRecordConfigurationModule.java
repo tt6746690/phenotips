@@ -40,6 +40,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Provider;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
@@ -106,7 +107,7 @@ public class StudyRecordConfigurationModule implements RecordConfigurationModule
             // Find if elements are enabled
             List<RecordElement> updatedElements = new LinkedList<>();
             for (RecordElement element : section.getAllElements()) {
-                if (elementOverrides == null || elementOverrides.isEmpty()
+                if (CollectionUtils.isEmpty(elementOverrides)
                     || elementOverrides.contains(element.getExtension().getId())) {
                     updatedElements.add(element);
                 }
@@ -127,7 +128,7 @@ public class StudyRecordConfigurationModule implements RecordConfigurationModule
         }
 
         // Sort the list of sections
-        if (sectionOverrides != null && !sectionOverrides.isEmpty()) {
+        if (!CollectionUtils.isEmpty(sectionOverrides)) {
             Collections.<RecordSection>sort(resultSections, new Comparator<RecordSection>()
             {
                 @Override
