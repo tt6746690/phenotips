@@ -101,6 +101,10 @@ public abstract class AbstractSolrVocabularyTerm implements VocabularyTerm
     public AbstractSolrVocabularyTerm(Vocabulary ontology)
     {
         this.ontology = ontology;
+    }
+
+    protected void initialize()
+    {
         if (!isNull()) {
             this.removeSelfDuplicate();
             this.parents = new LazySolrTermSet(getValues(IS_A), ontology);

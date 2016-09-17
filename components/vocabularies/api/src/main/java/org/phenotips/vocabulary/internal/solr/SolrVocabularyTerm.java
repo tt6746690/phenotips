@@ -48,6 +48,7 @@ public class SolrVocabularyTerm extends AbstractSolrVocabularyTerm
     {
         super(ontology);
         this.doc = doc;
+        initialize();
     }
 
     @Override
