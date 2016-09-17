@@ -107,8 +107,8 @@ public abstract class AbstractSolrVocabularyTerm implements VocabularyTerm
     {
         if (!isNull()) {
             this.removeSelfDuplicate();
-            this.parents = new LazySolrTermSet(getValues(IS_A), ontology);
-            this.ancestors = new LazySolrTermSet(getValues(TERM_CATEGORY), ontology);
+            this.parents = new LazySolrTermSet(getValues(IS_A), this.ontology);
+            this.ancestors = new LazySolrTermSet(getValues(TERM_CATEGORY), this.ontology);
             Collection<Object> termSet = getAncestorsAndSelfTermSet();
             this.ancestorsAndSelf = new LazySolrTermSet(termSet, this.ontology);
         }
@@ -137,7 +137,7 @@ public abstract class AbstractSolrVocabularyTerm implements VocabularyTerm
      */
     protected Collection<Object> getAncestorsAndSelfTermSet()
     {
-        Collection<Object> termSet = new LinkedHashSet<Object>();
+        Collection<Object> termSet = new LinkedHashSet<>();
         termSet.add(this.getId());
         if (getValues(TERM_CATEGORY) != null) {
             termSet.addAll(getValues(TERM_CATEGORY));

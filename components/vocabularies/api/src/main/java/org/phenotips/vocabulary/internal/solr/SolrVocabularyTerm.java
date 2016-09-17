@@ -66,7 +66,7 @@ public class SolrVocabularyTerm extends AbstractSolrVocabularyTerm
         if (isNull()) {
             return null;
         }
-        return doc.getFirstValue(key);
+        return this.doc.getFirstValue(key);
     }
 
     @Override
@@ -75,7 +75,7 @@ public class SolrVocabularyTerm extends AbstractSolrVocabularyTerm
         if (isNull()) {
             return null;
         }
-        return doc.getFieldValues(key);
+        return this.doc.getFieldValues(key);
     }
 
     @Override
@@ -84,12 +84,12 @@ public class SolrVocabularyTerm extends AbstractSolrVocabularyTerm
         if (isNull()) {
             return null;
         }
-        return doc.getFieldValue(key);
+        return this.doc.getFieldValue(key);
     }
 
     @Override
     protected boolean isNull()
     {
-        return doc == null;
+        return this.doc == null;
     }
 }
