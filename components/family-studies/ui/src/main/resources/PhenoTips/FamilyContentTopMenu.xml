@@ -520,6 +520,8 @@
   color: inherit !important;
   margin: 0 !important;
   padding: 0 !important;
+  font-size: inherit !important;
+  font-family: inherit !important;
 }
 #record-actions .menu-horizontal label:hover, #record-actions .menu-horizontal label:hover input {
   cursor: pointer;
