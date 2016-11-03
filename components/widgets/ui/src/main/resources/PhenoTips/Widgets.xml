@@ -4683,6 +4683,8 @@ document.observe("xwiki:dom:updated", init);
             }
         }
 
+        this.dateParts = dateObject;
+
         var newValue = JSON.stringify(dateObject);
         if (this.__recordBoth) {
           var oldValue = this.__fuzzyInput.value;
@@ -4700,6 +4702,63 @@ document.observe("xwiki:dom:updated", init);
             this.__input.fire("xwiki:date:changed");
           }
         }
+    }
+  });
+
+  Object.extend(widgets.FuzzyDatePicker, {
+    // Returns true if d1 is before d2, false if d1 is after d2 and undefined if they cannot be compared
+    // A decade value is understood as the first day of the decade for d`, and the last day of the decade for d2
+    // (so only the years are compared)
+    isDateAfter: function(d1, d2) {
+      var used_decade = false;  
+
+      if (d1.decade) {
+        d1.year = d1.decade.substring(0, d1.decade.length-1);
+        used_decade = true;
+      }
+      if (d2.decade) {
+        d2.year = Number(d2.decade.substring(0, d2.decade.length-1)) + 9;
+        used_decade = true;
+      }
+     
+      // compare years
+      if (typeof d1.year == "undefined" || typeof d2.year == "undefined") {
+        // dates cannot be compared
+        return;
+      }
+      if (d1.year &lt; d2.year) {
+        return true;
+      }
+      if (d1.year &gt; d2.year) {
+        return false;
+      }
+      if (used_decade) {
+        // here d1 == d2
+        return true;
+      }
+
+      // years are the same, compare months
+      if (typeof d1.month == "undefined" || typeof d2.month == "undefined") {
+        // dates cannot be compared
+        return;
+      }
+      if (d1.month &lt; d2.month) {
+        return true;
+      }
+      if (d1.month &gt; d2.month) {
+        return false;
+      }
+
+      // months are the same, check days
+      if (typeof d1.day == "undefined" || typeof d2.day == "undefined") {
+        // dates cannot be compared
+        return;
+      }
+      if (d1.day &lt; d2.day || d1.day == d2.day) {
+        return true;
+      } else {
+        return false;
+      }
     }
   });
 
