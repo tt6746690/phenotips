@@ -23,7 +23,6 @@ import org.phenotips.data.PatientData;
 import org.phenotips.data.PatientDataController;
 import org.phenotips.data.SimpleValuePatientData;
 
-import org.xwiki.bridge.DocumentAccessBridge;
 import org.xwiki.component.manager.ComponentLookupException;
 import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.model.reference.EntityReference;
@@ -78,8 +77,6 @@ public class GeneListControllerTest
     public MockitoComponentMockingRule<PatientDataController<Map<String, String>>> mocker =
         new MockitoComponentMockingRule<PatientDataController<Map<String, String>>>(GeneListController.class);
 
-    private DocumentAccessBridge documentAccessBridge;
-
     @Mock
     private Patient patient;
 
@@ -107,11 +104,10 @@ public class GeneListControllerTest
     {
         MockitoAnnotations.initMocks(this);
 
-        this.documentAccessBridge = this.mocker.getInstance(DocumentAccessBridge.class);
+        DocumentReference patientDocRef = new DocumentReference("wiki", "patient", "00000001");
+        doReturn(patientDocRef).when(this.patient).getDocumentReference();
+        doReturn(this.doc).when(this.patient).getXDocument();
 
-        DocumentReference patientDocument = new DocumentReference("wiki", "patient", "00000001");
-        doReturn(patientDocument).when(this.patient).getDocument();
-        doReturn(this.doc).when(this.documentAccessBridge).getDocument(patientDocument);
         this.geneXWikiObjects = new LinkedList<>();
         doReturn(this.geneXWikiObjects).when(this.doc).getXObjects(any(EntityReference.class));
     }
@@ -163,14 +159,13 @@ public class GeneListControllerTest
     @Test
     public void loadCatchesExceptionFromDocumentAccess() throws Exception
     {
-        Exception exception = new Exception();
-        doThrow(exception).when(this.documentAccessBridge).getDocument(any(DocumentReference.class));
+        Exception exception = new RuntimeException();
+        doThrow(exception).when(this.patient).getXDocument();
 
         PatientData<Map<String, String>> result = this.mocker.getComponentUnderTest().load(this.patient);
 
         Assert.assertNull(result);
-        verify(this.mocker.getMockedLogger()).error("Could not find requested document or some unforeseen "
-            + "error has occurred during controller loading ", exception.getMessage());
+        verify(this.mocker.getMockedLogger()).error(eq(PatientDataController.ERROR_MESSAGE_LOAD_FAILED), any());
     }
 
     @Test
@@ -455,7 +450,7 @@ public class GeneListControllerTest
     @Test
     public void saveWithNoDataDoesNothing() throws ComponentLookupException
     {
-        this.mocker.getComponentUnderTest().save(this.patient, this.doc);
+        this.mocker.getComponentUnderTest().save(this.patient);
         Mockito.verifyZeroInteractions(this.doc);
     }
 
@@ -463,7 +458,7 @@ public class GeneListControllerTest
     public void saveWithWrongTypeOfDataDoesNothing() throws ComponentLookupException
     {
         when(this.patient.getData(CONTROLLER_NAME)).thenReturn(new SimpleValuePatientData<Object>("a", "b"));
-        this.mocker.getComponentUnderTest().save(this.patient, this.doc);
+        this.mocker.getComponentUnderTest().save(this.patient);
         Mockito.verifyZeroInteractions(this.doc);
     }
 
@@ -475,7 +470,7 @@ public class GeneListControllerTest
         Provider<XWikiContext> xcontextProvider = this.mocker.getInstance(XWikiContext.TYPE_PROVIDER);
         XWikiContext context = xcontextProvider.get();
         when(context.getWiki()).thenReturn(mock(XWiki.class));
-        this.mocker.getComponentUnderTest().save(this.patient, this.doc);
+        this.mocker.getComponentUnderTest().save(this.patient);
         verify(this.doc).removeXObjects(GeneListController.GENE_CLASS_REFERENCE);
 
         Mockito.verifyNoMoreInteractions(this.doc);
@@ -503,7 +498,7 @@ public class GeneListControllerTest
         BaseObject o2 = mock(BaseObject.class);
         when(this.doc.newXObject(GeneListController.GENE_CLASS_REFERENCE, context)).thenReturn(o1, o2);
 
-        this.mocker.getComponentUnderTest().save(this.patient, this.doc);
+        this.mocker.getComponentUnderTest().save(this.patient);
 
         verify(this.doc).removeXObjects(GeneListController.GENE_CLASS_REFERENCE);
         verify(o1).set("gene", "GENE1", context);

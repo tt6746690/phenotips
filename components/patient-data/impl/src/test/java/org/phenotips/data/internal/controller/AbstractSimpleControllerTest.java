@@ -22,8 +22,6 @@ import org.phenotips.data.Patient;
 import org.phenotips.data.PatientData;
 import org.phenotips.data.PatientDataController;
 import org.phenotips.data.SimpleValuePatientData;
-
-import org.xwiki.bridge.DocumentAccessBridge;
 import org.xwiki.component.manager.ComponentLookupException;
 import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.test.mockito.MockitoComponentMockingRule;
@@ -50,6 +48,7 @@ import com.xpn.xwiki.objects.BaseObject;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
@@ -71,8 +70,6 @@ public class AbstractSimpleControllerTest
         new MockitoComponentMockingRule<PatientDataController<String>>(
             AbstractSimpleControllerTestImplementation.class);
 
-    private DocumentAccessBridge documentAccessBridge;
-
     @Mock
     protected XWiki xWiki;
 
@@ -90,11 +87,9 @@ public class AbstractSimpleControllerTest
     {
         MockitoAnnotations.initMocks(this);
 
-        this.documentAccessBridge = this.mocker.getInstance(DocumentAccessBridge.class);
-
-        DocumentReference patientDocument = new DocumentReference("wiki", "patient", "00000001");
-        doReturn(patientDocument).when(this.patient).getDocument();
-        doReturn(this.doc).when(this.documentAccessBridge).getDocument(patientDocument);
+        DocumentReference patientDocRef = new DocumentReference("wiki", "patient", "00000001");
+        doReturn(patientDocRef).when(this.patient).getDocumentReference();
+        doReturn(this.doc).when(this.patient).getXDocument();
         doReturn(this.data).when(this.doc).getXObject(Patient.CLASS_REFERENCE);
     }
 
@@ -107,15 +102,13 @@ public class AbstractSimpleControllerTest
     // -----------------------------------load() tests-----------------------------------
 
     @Test
-    public void loadCatchesExceptionFromDocumentAccess() throws Exception
+    public void loadCatchesInvalidDocument() throws ComponentLookupException
     {
-        Exception exception = new Exception();
-        doThrow(exception).when(this.documentAccessBridge).getDocument(any(DocumentReference.class));
+        doReturn(null).when(this.patient).getXDocument();
 
         PatientData<String> result = this.mocker.getComponentUnderTest().load(this.patient);
 
-        verify(this.mocker.getMockedLogger()).error("Could not find requested document or some unforeseen"
-            + " error has occurred during controller loading ", exception.getMessage());
+        verify(this.mocker.getMockedLogger()).error(eq(PatientDataController.ERROR_MESSAGE_LOAD_FAILED), any());
         Assert.assertNull(result);
     }
 
@@ -126,6 +119,18 @@ public class AbstractSimpleControllerTest
 
         PatientData<String> result = this.mocker.getComponentUnderTest().load(this.patient);
 
+        Assert.assertNull(result);
+    }
+
+    @Test
+    public void loadCatchesUnforeseenExceptions() throws Exception
+    {
+        Exception testException = new RuntimeException("Test Exception");
+        doThrow(testException).when(this.doc).getXObject(Patient.CLASS_REFERENCE);
+
+        PatientData<String> result = this.mocker.getComponentUnderTest().load(this.patient);
+
+        verify(this.mocker.getMockedLogger()).error(eq(PatientDataController.ERROR_MESSAGE_LOAD_FAILED), any());
         Assert.assertNull(result);
     }
 
@@ -169,7 +174,7 @@ public class AbstractSimpleControllerTest
         PatientData<String> patientData = new SimpleValuePatientData<>(DATA_NAME, "datum");
         doReturn(patientData).when(this.patient).getData(DATA_NAME);
 
-        this.mocker.getComponentUnderTest().save(this.patient, this.doc);
+        this.mocker.getComponentUnderTest().save(this.patient);
 
         verify(this.data, never()).setStringValue(anyString(), anyString());
         verify(this.xWiki, never()).saveDocument(any(XWikiDocument.class),
@@ -186,7 +191,7 @@ public class AbstractSimpleControllerTest
         PatientData<String> patientData = new DictionaryPatientData<>(DATA_NAME, map);
         doReturn(patientData).when(this.patient).getData(DATA_NAME);
 
-        this.mocker.getComponentUnderTest().save(this.patient, this.doc);
+        this.mocker.getComponentUnderTest().save(this.patient);
 
         verify(this.data).setStringValue(PROPERTY_1, "datum1");
         verify(this.data).setStringValue(PROPERTY_2, "datum2");
