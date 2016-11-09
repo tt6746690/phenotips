@@ -118,7 +118,9 @@ define([], function(){
         layoutRelativeOtherWidth: 2,
         layoutScale: { xscale: 12.0, yscale: 8 },
         maxPrintPreviewPaneHeight: 600,
-        minPrintPreviewPaneHeight: 250
+        minPrintPreviewPaneHeight: 250,
+        maxPEDexportContainerHeight: 600,
+        minPEDexportContainerHeight: 250
     };
 
     return PedigreeEditorParameters;
