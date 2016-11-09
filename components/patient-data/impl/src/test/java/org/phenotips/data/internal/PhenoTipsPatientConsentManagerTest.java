@@ -21,7 +21,6 @@ import org.phenotips.data.Consent;
 import org.phenotips.data.ConsentManager;
 import org.phenotips.data.Patient;
 import org.phenotips.data.PatientRepository;
-
 import org.xwiki.bridge.DocumentAccessBridge;
 import org.xwiki.bridge.DocumentModelBridge;
 import org.xwiki.component.util.DefaultParameterizedType;
@@ -259,17 +258,16 @@ public class PhenoTipsPatientConsentManagerTest
         String patientId = "pid";
 
         this.setUpInitializationWithConfigurationMocks();
-        DocumentAccessBridge dab = this.mocker.getInstance(DocumentAccessBridge.class);
         PatientRepository repository = this.mocker.getInstance(PatientRepository.class);
         Patient patient = mock(Patient.class);
         DocumentReference patientRef = mock(DocumentReference.class);
-        DocumentModelBridge patientDoc = mock(XWikiDocument.class);
+        XWikiDocument patientDoc = mock(XWikiDocument.class);
         BaseObject idsHolder = mock(BaseObject.class);
 
         doReturn(patient).when(repository).get(patientId);
-        doReturn(patientRef).when(patient).getDocument();
-        doReturn(patientDoc).when(dab).getDocument(patientRef);
-        doReturn(idsHolder).when((XWikiDocument) patientDoc).getXObject(any(EntityReference.class));
+        doReturn(patientRef).when(patient).getDocumentReference();
+        doReturn(patientDoc).when(patient).getXDocument();
+        doReturn(idsHolder).when(patientDoc).getXObject(any(EntityReference.class));
         doReturn(consentIds).when(idsHolder).getListValue(anyString());
 
         Set<Consent> consents = this.mocker.getComponentUnderTest().getMissingConsentsForPatient(patientId);
@@ -326,16 +324,15 @@ public class PhenoTipsPatientConsentManagerTest
         consentIds.add(ConsentConfigurationMocks.TEST_ID1);
 
         this.setUpInitializationWithConfigurationMocks();
-        DocumentAccessBridge dab = this.mocker.getInstance(DocumentAccessBridge.class);
         PatientRepository repository = this.mocker.getInstance(PatientRepository.class);
         Patient patient = mock(Patient.class);
         DocumentReference patientRef = mock(DocumentReference.class);
-        DocumentModelBridge patientDoc = mock(XWikiDocument.class);
+        XWikiDocument patientDoc = mock(XWikiDocument.class);
         BaseObject idsHolder = mock(BaseObject.class);
 
         doReturn(patient).when(repository).get(patientId);
-        doReturn(patientRef).when(patient).getDocument();
-        doReturn(patientDoc).when(dab).getDocument(patientRef);
+        doReturn(patientRef).when(patient).getDocumentReference();
+        doReturn(patientDoc).when(patient).getXDocument();
         doReturn(idsHolder).when((XWikiDocument) patientDoc).getXObject(any(EntityReference.class));
         doReturn(consentIds).when(idsHolder).getListValue(anyString());
 
@@ -344,18 +341,17 @@ public class PhenoTipsPatientConsentManagerTest
         Assert.assertFalse(this.mocker.getComponentUnderTest().hasConsent(patient, ConsentConfigurationMocks.TEST_ID3));
     }
 
-    private void setUpSettingConsents(BaseObject idsHolder, Patient patient, DocumentModelBridge patientDoc,
+    private void setUpSettingConsents(BaseObject idsHolder, Patient patient, XWikiDocument patientDoc,
         XWikiContext context, XWiki wiki) throws Exception
     {
         this.setUpInitializationWithConfigurationMocks();
 
-        DocumentAccessBridge dab = this.mocker.getInstance(DocumentAccessBridge.class);
         Provider<XWikiContext> contextProvider = this.mocker.getInstance(
             new DefaultParameterizedType((Type) null, Provider.class, new Type[] { XWikiContext.class }));
         DocumentReference patientRef = mock(DocumentReference.class);
 
-        doReturn(patientRef).when(patient).getDocument();
-        doReturn(patientDoc).when(dab).getDocument(patientRef);
+        doReturn(patientRef).when(patient).getDocumentReference();
+        doReturn(patientDoc).when(patient).getXDocument();
         doReturn(idsHolder).when((XWikiDocument) patientDoc).getXObject(any(EntityReference.class));
         doReturn(context).when(contextProvider).get();
         doReturn(wiki).when(context).getWiki();
@@ -368,7 +364,7 @@ public class PhenoTipsPatientConsentManagerTest
         Patient patient = mock(Patient.class);
         XWikiContext context = mock(XWikiContext.class);
         XWiki wiki = mock(XWiki.class);
-        DocumentModelBridge patientDoc = mock(XWikiDocument.class);
+        XWikiDocument patientDoc = mock(XWikiDocument.class);
 
         this.setUpSettingConsents(idsHolder, patient, patientDoc, context, wiki);
 
@@ -388,7 +384,7 @@ public class PhenoTipsPatientConsentManagerTest
         Patient patient = mock(Patient.class);
         XWikiContext context = mock(XWikiContext.class);
         XWiki wiki = mock(XWiki.class);
-        DocumentModelBridge patientDoc = mock(XWikiDocument.class);
+        XWikiDocument patientDoc = mock(XWikiDocument.class);
 
         this.setUpSettingConsents(null, patient, patientDoc, context, wiki);
 
@@ -412,7 +408,7 @@ public class PhenoTipsPatientConsentManagerTest
         Patient patient = mock(Patient.class);
         XWikiContext context = mock(XWikiContext.class);
         XWiki wiki = mock(XWiki.class);
-        DocumentModelBridge patientDoc = mock(XWikiDocument.class);
+        XWikiDocument patientDoc = mock(XWikiDocument.class);
 
         this.setUpSettingConsents(idsHolder, patient, patientDoc, context, wiki);
 
