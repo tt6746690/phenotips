@@ -96,7 +96,7 @@ public class PhenotipsFamily implements Family
     }
 
     @Override
-    public XWikiDocument getDocument()
+    public XWikiDocument getXDocument()
     {
         return this.familyDocument;
     }
@@ -157,7 +157,7 @@ public class PhenotipsFamily implements Family
         if (members == null) {
             return false;
         }
-        String patientId = patient.getDocument().getName();
+        String patientId = patient.getId();
         return members.contains(patientId);
     }
 
