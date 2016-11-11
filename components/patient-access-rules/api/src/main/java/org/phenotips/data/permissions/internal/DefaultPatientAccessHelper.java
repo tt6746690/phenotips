@@ -177,8 +177,14 @@ public class DefaultPatientAccessHelper implements PatientAccessHelper
         DocumentReference classReference =
             this.partialEntityResolver.resolve(Visibility.CLASS_REFERENCE, patient.getDocumentReference());
         try {
-            this.setProperty(patient.getXDocument(), classReference, "visibility", visibility != null
-                    ? visibility.getName() : "");
+            String visibilityAsString = (visibility != null) ? visibility.getName() : "";
+            String currentVisibility = this.getStringProperty(patient.getXDocument(), classReference, "visibility");
+            if (!visibilityAsString.equals(currentVisibility)) {
+                this.setProperty(patient.getXDocument(), classReference, "visibility", visibilityAsString);
+                XWikiContext context = getXWikiContext();
+                context.getWiki().saveDocument(patient.getXDocument(), "Set visibility: " + visibilityAsString,
+                        true, context);
+            }
             return true;
         } catch (Exception e) {
             return false;
