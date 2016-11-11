@@ -21,9 +21,9 @@
 <xwikidoc version="1.1">
   <web>PhenoTips</web>
   <name>SpecificityMetricWidgetTranslations</name>
-  <language>ja</language>
+  <language/>
   <defaultLanguage>en</defaultLanguage>
-  <translation>1</translation>
+  <translation>0</translation>
   <creator>xwiki:XWiki.Admin</creator>
   <creationDate>1401822215000</creationDate>
   <parent>PhenoTips.SpecificityMetricWidget</parent>
@@ -38,4 +38,39 @@
   <syntaxId>xwiki/2.1</syntaxId>
   <hidden>true</hidden>
   <content></content>
+  <object>
+    <name>PhenoTips.SpecificityMetricWidgetTranslations</name>
+    <number>0</number>
+    <className>XWiki.TranslationDocumentClass</className>
+    <guid>57c7d51f-0857-42ca-99aa-1e37fc9be119</guid>
+    <class>
+      <name>XWiki.TranslationDocumentClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <scope>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <multiSelect>0</multiSelect>
+        <name>scope</name>
+        <number>1</number>
+        <prettyName>Scope</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators> ,|</separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>GLOBAL|WIKI|USER|ON_DEMAND</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </scope>
+    </class>
+    <property>
+      <scope>WIKI</scope>
+    </property>
+  </object>
 </xwikidoc>
